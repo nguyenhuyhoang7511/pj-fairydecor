@@ -36,10 +36,7 @@ const config: NuxtConfig = {
     },
     pageTransition: { name: 'page', mode: 'out-in' },
   },
-  devServer: {
-      host: '0.0.0.0',
-      port: 3000, 
-  },
+
   runtimeConfig: {
     public: {
       NUXT_API_URL: process.env.NUXT_API_URL

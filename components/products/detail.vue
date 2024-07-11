@@ -2,36 +2,36 @@
   <div class="container-info">
     <div class="container-info-left">
       <Galleria
-        :value="images"
+        v-model:activeIndex="activeIndex"
+        :value="product?.image_slide"
         :responsiveOptions="responsiveOptions"
         :numVisible="5"
         containerStyle="max-width: 640px"
       >
         <template #item="slotProps">
           <img
-            :src="slotProps.item.itemImageSrc"
-            :alt="slotProps.item.alt"
+            :src="imageSelected ? imageSelected : slotProps.item.link"
+            :alt="imageSelected ? imageSelected : slotProps.item.link"
             style="width: 100%"
           />
         </template>
         <template #thumbnail="slotProps">
-          <img :src="slotProps.item.thumbnailImageSrc" :alt="slotProps.item.alt" />
+          <img :src="slotProps.item.link" :alt="slotProps.item.link" />
         </template>
       </Galleria>
     </div>
     <div class="container-info-right">
       <p class="product-title">
-        (Có ẢNH THẬT) Tranh Treo Tường Canvas,Tranh treo phòng ngủ,phòng khách,cầu thang
-        đẹp⚡FREE SHIP⚡Bức đồng quê
+        {{ product ? product.title : "" }}
       </p>
       <p class="product-tk">
         <Rating v-model="rating" :cancel="false" class="mr-5" />
         <span>
-          <span class="number">15</span> Đánh Giá | <span class="number">48</span> Đã
-          Bán</span
+          <span class="number">{{ product?.total_rating }}</span> Đánh Giá |
+          <span class="number">{{ product?.sold }}</span> Đã Bán</span
         >
       </p>
-      <p class="product-price">₫199.000 - ₫450.000</p>
+      <p class="product-price">{{ priceProduct }}</p>
 
       <span
         ><span style="font-weight: 600">Chính Sách Trả Hàng:</span> Trả hàng 15 ngày (Đổi
@@ -46,27 +46,29 @@
         <div class="container-list">
           <div
             class="list"
-            v-for="(item, index) in 50"
+            v-for="(item, index) in product?.list_type"
             :key="index"
-            @click="handleSelectedCategory(index)"
+            @click="handleSelectedCategory(item)"
           >
-            <div class="item" :class="{ selected: selectedCategory === index }">
-              <img
-                src="https://down-vn.img.susercontent.com/file/vn-11134201-23030-fd076luxmwov31"
-                alt=""
-              />
-              <span class="name"> SET {{ index + 1 }} </span>
-              <div :class="{ 'icon-selected': selectedCategory === index }"></div>
+            <div class="item" :class="{ selected: selectedCategory?.id === item.id }">
+              <img :src="item.image" alt="" />
+              <span class="name"> {{ item.name }} </span>
+              <div :class="{ 'icon-selected': selectedCategory?.id === item.id }"></div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="size">
+      <div class="size" v-if="product?.option">
         <p class="label-common">Kích thước</p>
-        <div class="list-size">
-          <div class="item-size">40x60 cm</div>
-          <div class="item-size">40x60 cm</div>
+        <div class="list-size" v-for="item in product.option">
+          <div
+            @click="() => changeSelectedSize(item)"
+            class="item-size mr-10"
+            :class="selectedSize.id == item.id ? 'item-size-selected' : ''"
+          >
+            {{ item.value }}
+          </div>
         </div>
       </div>
 
@@ -84,6 +86,7 @@
             <template #decrementbuttonicon> - </template>
           </InputNumber>
         </div>
+        <p class="ml-30">{{ product?.quantity }} sản phẩm có sẵn</p>
       </div>
 
       <div class="container-btn">
@@ -96,16 +99,52 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { PhotoService } from "@/service/PhotoService";
+import { ProductServiceApi } from "~/service/ProductServiceApi";
+import type { Product, Option,ProductType } from "~/interface/product";
 
+const product = ref<Product | null>(null);
 const rating = ref(5);
-
-const selectedCategory = ref<number>(0);
-
 const quantity = ref<number>(1);
+const route = useRoute();
+const priceProduct = ref();
+const imageSelected = ref()
+const activeIndex = ref(2);
 
-const handleSelectedCategory = (index: number) => {
-  selectedCategory.value = index;
+const selectedCategory = ref<ProductType>(
+  {
+    id: 1,
+    name: '',
+    image: '',
+    option1: 0,
+    option2: 0,
+    thumbnail: ''
+  }
+);
+const selectedSize = ref<Option>({
+  id: 1,
+  value: "",
+});
+
+const updatePriceProduct = () => {
+  let optionKey = `option${selectedSize.value.id}`;
+  priceProduct.value = selectedCategory.value[optionKey];
 };
+
+const changeSelectedSize = (item: Option) => {
+  selectedSize.value = item;
+};
+
+const handleSelectedCategory = (item: ProductType) => {
+  selectedCategory.value = item;
+  imageSelected.value = item.image
+};
+
+watch([selectedSize, selectedCategory], updatePriceProduct);
+
+watch(() => activeIndex.value, () => {
+  imageSelected.value = null;
+});
+
 const images = ref();
 const responsiveOptions = ref([
   {
@@ -118,14 +157,25 @@ const responsiveOptions = ref([
   },
 ]);
 
+const getProductDetail = async () => {
+  const productId = route.query.id;
+  const response: any = await ProductServiceApi.getProductDetail(productId);
+  product.value = response[0];
+  priceProduct.value = response[0].price_text;
+  console.log(product.value);
+};
 onMounted(() => {
   PhotoService.getImages().then((data) => (images.value = data));
+  getProductDetail();
 });
 </script>
 
 <style lang="scss" scoped>
 * {
   font-family: Arial, Helvetica, sans-serif;
+}
+:deep(.p-galleria-thumbnail-item-content img) {
+  width: 60% !important;
 }
 :deep(.p-inputnumber-input) {
   width: 2.5rem !important;
@@ -240,6 +290,11 @@ onMounted(() => {
       .list-size {
         display: flex;
         gap: 1rem;
+        .item-size-selected {
+          background-color: brown !important;
+          color: #ffffff !important;
+          border: none !important;
+        }
         .item-size {
           cursor: pointer;
           border: 1px solid #ccc;
@@ -308,10 +363,10 @@ onMounted(() => {
     justify-content: start;
     flex-direction: column;
     gap: 2rem;
-    .container-info-left{
+    .container-info-left {
       width: 100%;
     }
-    .container-info-right{
+    .container-info-right {
       width: 100%;
       .container-btn {
         .btn {
@@ -320,9 +375,9 @@ onMounted(() => {
         }
       }
     }
-    .list-category{
+    .list-category {
       width: 100% !important;
-      .container-list{
+      .container-list {
         width: 100% !important;
       }
     }
