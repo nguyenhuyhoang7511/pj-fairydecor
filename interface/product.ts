@@ -20,9 +20,24 @@ export interface Product{
     },
     description: string,
     image_slide: any,
-    votes: any
+    reviews: Reviews[]
 }
 
+export interface Reviews{
+    id: number,
+    user_name: string,
+    avatar: string,
+    description: string,
+    rating: number,
+    info: string,
+    image_rate: Media[]
+    video: Media[]
+}
+
+export interface Media{
+    id : number,
+    link: string
+}
 export interface Option{
     id: number,
     value: string

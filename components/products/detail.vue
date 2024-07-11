@@ -1,5 +1,5 @@
 <template>
-  <div class="container-info">
+  <div class="container-info card-custom">
     <div class="container-info-left">
       <Galleria
         v-model:activeIndex="activeIndex"
@@ -95,31 +95,74 @@
       </div>
     </div>
   </div>
+  <hr class="mt-30 mb-30" />
+
+  <div class="detail-product">
+    <h3>CHI TIẾT SẢN PHẨM</h3>
+    <div class="description" v-html="product?.description"></div>
+  </div>
+
+  <hr class="mt-30 mb-30" />
+
+  <div class="card-custom reviews" v-if="product?.reviews">
+    <h3>ĐÁNH GIÁ SẢN PHẨM</h3>
+
+    <Fieldset class="mb-30" v-for="item in product?.reviews">
+      <template #legend>
+        <div class="flex align-items-center pl-2">
+          <Avatar :image="item.avatar" shape="circle" />
+          <span>{{ item.user_name }}</span>
+        </div>
+      </template>
+      <p class="description">
+        {{ item.description }}
+      </p>
+      <p class="info">{{ item.info }}</p>
+      <Rating v-model="item.rating" :cancel="false" />
+      <div class="envidence">
+        <div v-if="item.video.length > 0" class="image-feedback">
+          <div v-for="image in item.image_rate">
+            <Image
+              class="media-style"
+              :src="image.link"
+              alt="Image"
+              preview
+              width="100"
+            />
+          </div>
+        </div>
+        <div v-if="item.video.length > 0">
+          <video class="media-style" controls v-for="video in item.video">
+            <source :src="video.link" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </div>
+    </Fieldset>
+  </div>
 </template>
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { PhotoService } from "@/service/PhotoService";
 import { ProductServiceApi } from "~/service/ProductServiceApi";
-import type { Product, Option,ProductType } from "~/interface/product";
+import type { Product, Option, ProductType } from "~/interface/product";
 
 const product = ref<Product | null>(null);
 const rating = ref(5);
 const quantity = ref<number>(1);
 const route = useRoute();
 const priceProduct = ref();
-const imageSelected = ref()
+const imageSelected = ref();
 const activeIndex = ref(2);
 
-const selectedCategory = ref<ProductType>(
-  {
-    id: 1,
-    name: '',
-    image: '',
-    option1: 0,
-    option2: 0,
-    thumbnail: ''
-  }
-);
+const selectedCategory = ref<ProductType>({
+  id: 1,
+  name: "",
+  image: "",
+  option1: 0,
+  option2: 0,
+  thumbnail: "",
+});
 const selectedSize = ref<Option>({
   id: 1,
   value: "",
@@ -136,14 +179,17 @@ const changeSelectedSize = (item: Option) => {
 
 const handleSelectedCategory = (item: ProductType) => {
   selectedCategory.value = item;
-  imageSelected.value = item.image
+  imageSelected.value = item.image;
 };
 
 watch([selectedSize, selectedCategory], updatePriceProduct);
 
-watch(() => activeIndex.value, () => {
-  imageSelected.value = null;
-});
+watch(
+  () => activeIndex.value,
+  () => {
+    imageSelected.value = null;
+  }
+);
 
 const images = ref();
 const responsiveOptions = ref([
@@ -171,6 +217,33 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+:deep(.p-image img) {
+  width: 100px;
+  height: 140px;
+}
+
+.reviews {
+  .envidence {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+    gap: 1rem;
+  }
+  .description {
+    font-size: 0.9rem;
+  }
+  .info {
+    font-size: 0.9rem;
+    color: rgba(0, 0, 0, 0.4);
+  }
+  .media-style {
+    border: 1px solid #ccc;
+  }
+  video {
+    width: 100px;
+    height: 140px;
+  }
+}
 * {
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -185,10 +258,18 @@ onMounted(() => {
   height: 2.2rem;
 }
 :deep(.p-galleria-item-wrapper) {
-  border: 1px solid #cccccc93;
   height: 630px;
 }
-
+.detail-text {
+  font-size: 12px;
+}
+.card-custom {
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  background-color: #fff;
+}
 .container-info {
   display: flex;
   justify-content: start;
@@ -318,6 +399,14 @@ onMounted(() => {
       .btn {
         padding: 1rem 2rem;
       }
+    }
+  }
+}
+
+.detail-product {
+  .description {
+    p {
+      font-size: 12px;
     }
   }
 }

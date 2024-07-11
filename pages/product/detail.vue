@@ -20,8 +20,7 @@
         </template>
       </Breadcrumb>
     </div>
-    <ProductsDetail/>
-
+    <ProductsDetail/>    
   </div>
 </template>
 

@@ -51,24 +51,20 @@ export const ProductServiceApi = {
                 },
                 description:
                     `   
-                    <h1>FAIRY DECOR</h1>
-                    <h2>••• BẢNG WELCOME ĐÁM CƯỚI •••</h2>
-                    <hr>
-                    <h3>Chất liệu :</h3>
-                    <ul>
-                        <li>Tranh được in trên nền vải canvas, và được ép lên tấm formex chống nước (5mm).</li>
-                        <li>In UV, mực tốt, lên chuẩn màu, sắc nét.</li>
-                    </ul>
-                    <hr>
-                    <h3>Kích thước:</h3>
-                    <ul>
-                        <li>50x75cm</li>
-                        <li>60x90cm</li>
-                        <li>In cỡ tùy thích: Ib cho shop nha</li>
-                    </ul>
-                    <hr>
-                    <p>Sđt : 033.356.8062 (Zalo/Call)</p>
-                    <hr>
+                    <h4>FAIRY DECOR</h4>
+                    <h5>••• BẢNG WELCOME ĐÁM CƯỚI •••</h5>
+                    <p style="font-weight: 600;">Chất liệu :</p>
+                    <p>
+                        Tranh được in trên nền vải canvas, và được ép lên tấm formex chống nước (5mm). <br>
+                        In UV, mực tốt, lên chuẩn màu, sắc nét. <br>
+                    </p>
+                    <p style="font-weight: 600;">Kích thước:</p>
+                    <p>
+                        50x75cm <br>
+                        60x90cm <br>
+                        In cỡ tùy thích: Ib cho shop nha <br>
+                    </p>
+                    <p>SDT : 033.356.8062 (Zalo/Call)</p>
                 `,
                 image_slide :[
                     {id: 1, link : 'https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lkdc3ur38pt43b'},
@@ -82,18 +78,26 @@ export const ProductServiceApi = {
                     {id: 9, link : 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-ltizgs8t2nm2de'},
                 ],
                 
-                votes:[
+                reviews:[
                     {
                         id : 1,
-                        user_name : 'thuytrang148',
+                        user_name : 'iammieoo',
                         star : 5,
-                        avatar:'',
-                        description :'Hàng đẹp, in nhanh và màu nét, đóng gói rất kỹ, mặc dù vội sát ngày cưới nhưng shop vẫn tư vấn và hỗ trợ nhiệt tình để kịp thời nhận trc ngày cưới. Cảm ơn shop nhiều. Ngày vội k kịp chụp ảnh',
-                        product : 'SET 3,50x75 cm',
-                        time :'2023-10-27 10:35',
+                        avatar:'https://down-vn.img.susercontent.com/file/vn-11134233-7r98o-lqlk2q1xg4pebe_tn',
+                        description :'Sốp rất là cute, chỉnh từng tí từng tí do khách rất là khó chiều, sản phẩm nhìn ưng, chất liệu thì mình nghĩ nó sẽ dày dặn hơn nhưng giá này thì vậy là oke lắm rồi, gom mãi mới được mấy ảnh để đánh giá cho sốp',
+                        info:"2024-01-18 23:28 | Phân loại hàng: SET 3,50x75 cm",
+                        rating: 5,
                         image_rate :[
-                            'https://down-bs-vn.img.susercontent.com/vn-11134103-7r98o-luz4j4gscu8i9d.webp',
-                            'https://down-bs-vn.img.susercontent.com/vn-11134103-7r98o-luz4j4grxdzmd8.webp'
+                            {
+                                id: 1,
+                                link: 'https://down-bs-vn.img.susercontent.com/vn-11134103-7r98o-lqnm043f1yyf14.webp'
+                            }
+                        ],
+                        video:[
+                            {
+                                id: 1,
+                                link : 'https://down-aka-sg.vod.susercontent.com/api/v4/11110103/mms/vn-11110103-6ke17-lqnm27pmecs73f.default.mp4'
+                            }
                         ]
                     }
                 ]
