@@ -9,7 +9,6 @@ export const ProductServiceApi = {
                 total_rating: 58,
                 total_review: 400,
                 sold: 219,
-                price_text: '₫199.000 - ₫299.000',
                 price_start: 199000,
                 price_end: 299000,
                 quantity: 1932,
@@ -22,24 +21,24 @@ export const ProductServiceApi = {
                     {
                         id :1,
                         name: "SET1",
-                        option1: '249.000',
-                        option2: '299.000',
+                        option1: 249000,
+                        option2: 299000,
                         image: 'https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lkd9476kxxgo4d',
                         thumbnail: 'https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lkd9476kxxgo4d'
                     },
                     {
                         id :2,
                         name: "SET2",
-                        option1: '350.000',
-                        option2: '420.000',
+                        option1: 350000,
+                        option2: 420000,
                         image: 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lpkc10vrnreq51',
                         thumbnail: 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lpkc10vrnreq51'
                     },
                     {
                         id :3,
                         name: "SET3",
-                        option1: '510.000',
-                        option2: '799.000',
+                        option1: 510000,
+                        option2: 799000,
                         image: 'https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lkd9476kzc149d',
                         thumbnail: 'https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lkd9476kzc149d'
                     },

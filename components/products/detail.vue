@@ -31,7 +31,13 @@
           <span class="number">{{ product?.sold }}</span> Đã Bán</span
         >
       </p>
-      <p class="product-price">{{ priceProduct }}</p>
+      <p class="product-price">
+        {{
+          priceProduct
+            ? formatCurrencyVND(priceProduct)
+            : formatCurrencyVND(priceStart) + "-" + formatCurrencyVND(priceEnd)
+        }}
+      </p>
 
       <span
         ><span style="font-weight: 600">Chính Sách Trả Hàng:</span> Trả hàng 15 ngày (Đổi
@@ -81,6 +87,8 @@
             v-model="quantity"
             buttonLayout="horizontal"
             :step="1"
+            @input="(e) => updatePriceProduct(e)"
+            :min="1"
           >
             <template #incrementbuttonicon> + </template>
             <template #decrementbuttonicon> - </template>
@@ -151,7 +159,9 @@ const product = ref<Product | null>(null);
 const rating = ref(5);
 const quantity = ref<number>(1);
 const route = useRoute();
-const priceProduct = ref();
+const priceProduct = ref<number>();
+const priceStart = ref<number>();
+const priceEnd = ref<number>();
 const imageSelected = ref();
 const activeIndex = ref(2);
 
@@ -168,8 +178,14 @@ const selectedSize = ref<Option>({
   value: "",
 });
 
-const updatePriceProduct = () => {
+const updatePriceProduct = (e?: any) => {
+ 
+  
   let optionKey = `option${selectedSize.value.id}`;
+  if (e.value) {
+  console.log(selectedCategory.value[optionKey]);
+    priceProduct.value = (selectedCategory.value[optionKey] * e.value);
+  }
   priceProduct.value = selectedCategory.value[optionKey];
 };
 
@@ -207,9 +223,14 @@ const getProductDetail = async () => {
   const productId = route.query.id;
   const response: any = await ProductServiceApi.getProductDetail(productId);
   product.value = response[0];
-  priceProduct.value = response[0].price_text;
-  console.log(product.value);
+  priceStart.value = response[0].price_start;
+  priceEnd.value = response[0].price_end;
 };
+function formatCurrencyVND(amount: any) {
+  if (amount) {
+    return amount.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
+  }
+}
 onMounted(() => {
   PhotoService.getImages().then((data) => (images.value = data));
   getProductDetail();
@@ -308,7 +329,7 @@ onMounted(() => {
       }
     }
     .product-price {
-      color: #ee4d2d;
+      color: brown;
       font-size: 1.875rem;
       font-weight: 500;
     }
@@ -348,7 +369,7 @@ onMounted(() => {
               font-size: 0.7rem;
             }
             .icon-selected {
-              background-color: #ee4d2d;
+              background-color: brown;
               width: 2rem;
               height: 2rem;
               position: absolute;
@@ -358,7 +379,7 @@ onMounted(() => {
             }
           }
           .selected {
-            border: 1px solid orangered;
+            border: 1px solid brown;
             position: relative;
           }
         }

@@ -35,7 +35,7 @@ const { t } = useI18n();
   color: brown;
 }
 .p-rating-icon{
-  color: red;
+  color: brown;
 }
 :root{
   --p-focus-ring-color: brown 
