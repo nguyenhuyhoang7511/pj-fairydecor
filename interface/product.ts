@@ -36,7 +36,8 @@ export interface Reviews{
 
 export interface Media{
     id : number,
-    link: string
+    link: string,
+    type : 'video' | 'image'
 }
 export interface Option{
     id: number,

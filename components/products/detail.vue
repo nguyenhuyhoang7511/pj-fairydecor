@@ -87,7 +87,7 @@
             v-model="quantity"
             buttonLayout="horizontal"
             :step="1"
-            @input="(e) => updatePriceProduct(e)"
+            @input="(e) => updateQuantity(e)"
             :min="1"
           >
             <template #incrementbuttonicon> + </template>
@@ -128,22 +128,21 @@
       <p class="info">{{ item.info }}</p>
       <Rating v-model="item.rating" :cancel="false" />
       <div class="envidence">
-        <div v-if="item.video.length > 0" class="image-feedback">
-          <div v-for="image in item.image_rate">
+        <div class="image-feedback">
+          <div v-for="(image,index) in item.image_rate">
             <Image
               class="media-style"
               :src="image.link"
               alt="Image"
               preview
               width="100"
+              v-if="image.type === 'image'"
             />
+            <video class="media-style" controls  v-else  >
+              <source :src="image.link" type="video/mp4"/>
+              Your browser does not support the video tag.
+            </video>
           </div>
-        </div>
-        <div v-if="item.video.length > 0">
-          <video class="media-style" controls v-for="video in item.video">
-            <source :src="video.link" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
         </div>
       </div>
     </Fieldset>
@@ -166,7 +165,7 @@ const imageSelected = ref();
 const activeIndex = ref(2);
 
 const selectedCategory = ref<ProductType>({
-  id: 1,
+  id: 0,
   name: "",
   image: "",
   option1: 0,
@@ -178,14 +177,14 @@ const selectedSize = ref<Option>({
   value: "",
 });
 
-const updatePriceProduct = (e?: any) => {
- 
-  
+const updateQuantity = (e: any) => {
+  const priceCurrent = Number(priceProduct.value) / e.value;
+  console.log(priceCurrent);
+  priceProduct.value = priceCurrent * e.value;
+};
+
+const updatePriceProduct = () => {
   let optionKey = `option${selectedSize.value.id}`;
-  if (e.value) {
-  console.log(selectedCategory.value[optionKey]);
-    priceProduct.value = (selectedCategory.value[optionKey] * e.value);
-  }
   priceProduct.value = selectedCategory.value[optionKey];
 };
 
@@ -249,6 +248,11 @@ onMounted(() => {
     align-items: center;
     margin-top: 1rem;
     gap: 1rem;
+    .image-feedback{
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
   }
   .description {
     font-size: 0.9rem;
