@@ -8,6 +8,7 @@ export interface Product{
     sold : number,
     price_text : string,
     price_start : number,
+    avatar: string,
     price_end : number,
     quantity : number,
     product_category:number,

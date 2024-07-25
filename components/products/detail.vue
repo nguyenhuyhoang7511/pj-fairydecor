@@ -98,7 +98,12 @@
       </div>
 
       <div class="container-btn">
-        <Button class="mr-30 btn" label="Thêm Vào giỏ hàng" icon="pi pi-shopping-cart" />
+        <Button
+          class="mr-30 btn"
+          label="Thêm Vào giỏ hàng"
+          icon="pi pi-shopping-cart"
+          @click="handleAddToCart"
+        />
         <Button class="btn" label="Mua ngay" icon="pi pi-money-bill" />
       </div>
     </div>
@@ -129,7 +134,7 @@
       <Rating v-model="item.rating" :cancel="false" />
       <div class="envidence">
         <div class="image-feedback">
-          <div v-for="(image,index) in item.image_rate">
+          <div v-for="(image, index) in item.image_rate">
             <Image
               class="media-style"
               :src="image.link"
@@ -138,8 +143,8 @@
               width="100"
               v-if="image.type === 'image'"
             />
-            <video class="media-style" controls  v-else  >
-              <source :src="image.link" type="video/mp4"/>
+            <video class="media-style" controls v-else>
+              <source :src="image.link" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           </div>
@@ -150,7 +155,6 @@
 </template>
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { PhotoService } from "@/service/PhotoService";
 import { ProductServiceApi } from "~/service/ProductServiceApi";
 import type { Product, Option, ProductType } from "~/interface/product";
 
@@ -176,10 +180,10 @@ const selectedSize = ref<Option>({
   id: 1,
   value: "",
 });
+const toast = useToast();
 
 const updateQuantity = (e: any) => {
   const priceCurrent = Number(priceProduct.value) / e.value;
-  console.log(priceCurrent);
   priceProduct.value = priceCurrent * e.value;
 };
 
@@ -197,6 +201,42 @@ const handleSelectedCategory = (item: ProductType) => {
   imageSelected.value = item.image;
 };
 
+const handleAddToCart = () => {
+  const initProduct = {
+    id: product.value?.id,
+    title: product.value?.title,
+    image: selectedCategory.value.image,
+    category: selectedCategory.value.name,
+    price: priceProduct.value,
+    total: quantity.value,
+    total_price: priceProduct.value && priceProduct.value * quantity.value,
+    size: selectedSize.value.value,
+  };
+
+  const cartString = localStorage.getItem("cart");
+  let cart = cartString ? JSON.parse(cartString) : [];
+
+  const productExists = cart.some((item : any) => item.id === product.value?.id);
+  if (!productExists) {
+    cart.push(initProduct);
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    toast.add({
+      severity: "success",
+      detail: "Đã thêm sản phẩm vào giỏ hàng",
+      summary: "Thông báo",
+      life: 3000,
+    });
+  } else {
+    toast.add({
+      severity: "warn",
+      detail: "Sản phẩm đã tồn tại trong giỏ hàng",
+      summary: "Cảnh báo",
+      life: 3000,
+    });
+  }
+};
+
 watch([selectedSize, selectedCategory], updatePriceProduct);
 
 watch(
@@ -206,7 +246,6 @@ watch(
   }
 );
 
-const images = ref();
 const responsiveOptions = ref([
   {
     breakpoint: "1300px",
@@ -231,7 +270,6 @@ function formatCurrencyVND(amount: any) {
   }
 }
 onMounted(() => {
-  PhotoService.getImages().then((data) => (images.value = data));
   getProductDetail();
 });
 </script>
@@ -248,7 +286,7 @@ onMounted(() => {
     align-items: center;
     margin-top: 1rem;
     gap: 1rem;
-    .image-feedback{
+    .image-feedback {
       display: flex;
       gap: 1rem;
       flex-wrap: wrap;

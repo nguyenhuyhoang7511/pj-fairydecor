@@ -1,3 +1,48 @@
+<script setup lang="ts">
+const menu = ref();
+const productsInsideCart = ref()
+const items = ref([
+  {
+    label: "Options",
+    items: [
+      {
+        label: "Refresh",
+        icon: "pi pi-refresh",
+      },
+      {
+        label: "Export",
+        icon: "pi pi-upload",
+      },
+    ],
+  },
+]);
+
+const toggle = (event : any) => {
+  menu.value.toggle(event);
+};
+const handleRedirect = () => {
+  window.open("https://zalo.me/0356579021", "_blank");
+};
+const inputSearch = reactive({
+  target: "",
+  keyword: "",
+});
+function formatPrice(value: number) {
+  const formattedValue = new Intl.NumberFormat("vi-VN").format(value);
+  return `${formattedValue}đ`;
+}
+
+const handleGetProductsForCard = () => {
+  const cartString = localStorage.getItem('cart');
+  let response = cartString ? JSON.parse(cartString) : [];
+  productsInsideCart.value = response
+}
+
+onMounted(() =>{
+  handleGetProductsForCard()
+})
+</script>
+
 <template>
   <div class="container">
     <header>
@@ -6,7 +51,7 @@
           <div class="container-logo">
             <img
               class="image-logo"
-              src="https://beedesign.com.vn/wp-content/uploads/2020/09/thiet-ke-logo-con-heo-res.jpg"
+              src="https://inuvdp.com/wp-content/uploads/2022/05/logo-la-co-03.jpg"
               alt="logo"
             />
             <div class="tablet-none company-name">
@@ -14,15 +59,43 @@
               <h4>Fairy-decor</h4>
             </div>
           </div>
-          <div style="width:50%">
+          <div style="width: 50%">
             <IconField iconPosition="left">
               <InputIcon class="pi pi-search"> </InputIcon>
               <InputText placeholder="Tìm kiếm sản phẩm " style="width: 100%" />
             </IconField>
           </div>
           <div class="container-cart">
-            <Button icon="pi pi-cart-plus"  class="btn mr-20" label="Giỏ hàng" />
-            <Button class="btn btn-style" label="Liên hệ" />
+            <Button
+              icon="pi pi-cart-plus"
+              class="btn mr-20"
+              label="Giỏ hàng"
+              @click="toggle"
+              aria-haspopup="true"
+              aria-controls="overlay_menu"
+            />
+            <Button class="btn btn-style" label="Liên hệ" @click="handleRedirect" />
+            <Menu ref="menu" id="overlay_menu" :popup="true">
+              <template #start>
+                <div class="container-cart-inside">
+                  <p class="title-header">Danh sách sản phẩm</p>
+                  <div class="container-item" v-for="product in productsInsideCart">
+                    <div class="left">
+                      <img
+                        class="image"
+                        :src="product.image"
+                        alt=""
+                      />
+                    </div>
+                    <div class="right">
+                      <p class="name two-lines-ellipsis">{{ product.title }}</p>
+                      <p class="price">{{ formatPrice(product.price) }} ({{ product.total }} sản phẩm)</p> 
+                    </div>
+                  </div>
+                  <div class="view-all" style="text-align: center; font-size: .8rem; cursor:pointer">Xem tất cả</div>
+                </div>
+              </template>
+            </Menu>
           </div>
         </div>
       </nav>
@@ -30,14 +103,53 @@
   </div>
 </template>
 
-<script setup lang="ts">
-const inputSearch = reactive({
-  target: "",
-  keyword: "",
-});
-</script>
-
 <style scoped lang="scss">
+.two-lines-ellipsis {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.5; 
+  max-height: 3em; 
+}
+.container-cart-inside {
+  padding: 0.5rem 1rem;
+  width: 25rem;
+  p {
+    margin: 0;
+  }
+  .title-header {
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  .container-item {
+    display: flex;
+    justify-content: start;
+    gap: 1rem;
+    padding: 0.5rem 0;
+    border-top: 1px solid #ccc;
+    .left {
+      width: 40%;
+    }
+    .right {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      .name {
+        font-size: 0.8rem;
+      }
+      .price {
+        color: brown;
+        font-size: 0.8rem;
+      }
+    }
+  }
+  .view-all:hover{
+    text-decoration: underline;
+  }
+}
 .p-inputtext::placeholder {
   color: #aaa;
   font-size: 14px;
@@ -46,7 +158,7 @@ const inputSearch = reactive({
 .company-name {
   font-size: 1.2rem;
 }
-.btn{
+.btn {
   background-color: brown;
   border: none;
 }
@@ -71,13 +183,14 @@ header {
     align-items: center;
   }
   img {
-    width: 56px;
-    height: 56px;
-    margin-right: 0px;
+    width: 46px;
+    height: 46px;
+    margin-right: 12px;
   }
   p,
   h4 {
     margin: 0;
+    font-family: system-ui;
   }
   p {
     font-size: 12px;

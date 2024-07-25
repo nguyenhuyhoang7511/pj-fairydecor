@@ -4,7 +4,7 @@
       <div class="container-logo" @click="router.push('/')">
         <img
           class="image-logo"
-          src="https://beedesign.com.vn/wp-content/uploads/2020/09/thiet-ke-logo-con-heo-res.jpg"
+          src="https://inuvdp.com/wp-content/uploads/2022/05/logo-la-co-03.jpg"
           alt="logo"
         />
         <div class="tablet-none company-name">
@@ -42,7 +42,10 @@ const listMenu = ref([
             },
             {
                 label: 'Liên hệ',
-                icon: 'pi pi-whatsapp'
+                icon: 'pi pi-whatsapp',
+                command : () =>{
+                  handleRedirect()
+                }
             },
             {
                 label: 'Hướng dẫn',
@@ -52,6 +55,10 @@ const listMenu = ref([
     }
 ]);
 
+const handleRedirect = () =>{
+  window.open('https://zalo.me/0356579021', '_blank');
+}
+
 const toggleMenu = (event: any) => {
     menu.value.toggle(event);
 };
@@ -60,13 +67,14 @@ const toggleMenu = (event: any) => {
 <style lang="scss" scoped>
 .container-logo{
   img{
-    width: 82px;
-    height: 82px;
+    width: 72px;
+    height: 72px;
+    margin-right: 12px;
   }
   .name{
     font-size: 2rem;
     font-weight: bold;
-    font-family: math;
+    font-family: system-ui;
   }
   p{
     margin: 0;

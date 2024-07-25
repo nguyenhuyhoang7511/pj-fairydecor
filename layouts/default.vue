@@ -6,6 +6,7 @@
         <div class="main-body">
           <slot />
         </div>
+        <CommonToast />
         <LayoutFooter />
       </ClientOnly>
     </main>

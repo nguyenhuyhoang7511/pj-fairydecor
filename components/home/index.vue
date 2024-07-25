@@ -50,7 +50,7 @@
       <p class="title-common">GỢI Ý CHO BẠN</p>
       <div class="card">
         <Carousel
-          :value="products"
+          :value="suggestedProducts"
           :numVisible="3"
           :numScroll="1"
           :responsiveOptions="responsiveOptions"
@@ -58,28 +58,36 @@
           :autoplayInterval="3000"
         >
           <template #item="slotProps">
-            <div class="card-style" @click="router.push('/product/detail')">
-              <div class="mb-3">
+            <div class="card-style">
+              <div
+                class="mb-3 cursor-pointer"
+                @click="router.push(`/product/detail?id=${slotProps.data.id}`)"
+              >
                 <div>
                   <img
-                    :src="
-                      'https://primefaces.org/cdn/primevue/images/product/' +
-                      slotProps.data.image
-                    "
-                    :alt="slotProps.data.name"
+                    :src="slotProps.data.avatar"
+                    :alt="slotProps.data.avatar"
                     class="w-full border-round"
                   />
                   <Tag
                     :value="slotProps.data.inventoryStatus"
-                    :severity="getSeverity(slotProps.data.inventoryStatus)"
+                    :severity="'success'"
                     class="absolute"
                     style="left: 5px; top: 5px"
                   />
                 </div>
               </div>
-              <div class="mb-3 font-medium">{{ slotProps.data.name }}</div>
+              <div
+                class="mb-3 font-medium cursor-pointer"
+                @click="router.push(`/product/detail?id=${slotProps.data.id}`)"
+              >
+                {{ slotProps.data.name }}
+              </div>
               <div class="info-product">
-                <div class="mt-0 font-semibold text-xl">${{ slotProps.data.price }}</div>
+                <div class="mt-0 font-semibold text-xl price-common">
+                  {{ formatPrice(slotProps.data.price_start) }}-
+                  {{ formatPrice(slotProps.data.price_end) }}
+                </div>
                 <span>
                   <Button icon="pi pi-heart" severity="secondary" outlined />
                   <Button icon="pi pi-shopping-cart" class="ml-2" />
@@ -94,25 +102,33 @@
     <div class="best-seller">
       <p class="title-common">SẢN PHẨM BÁN CHẠY</p>
       <div class="products">
-        <Card class="product-card-custom" v-for="(item, index) in 4" :key="index" @click="router.push('/product/detail')">
+        <Card
+          class="product-card-custom"
+          v-for="(product, index) in topSoldProducts"
+          :key="index"
+        >
           <template #header>
             <img
-              class="image-card"
-              alt="Products image"
-              src="https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lh8tf0g540fmdc_tn.webp"
+              class="image-card cursor-pointer"
+              :src="product.avatar"
+              :alt="product.avatar"
+              @click="router.push(`/product/detail?id=${product.id}`)"
             />
           </template>
           <template #title>
             <span
-              class="product-title"
-              v-tooltip="{ value: 'Enter your username', autoHide: false }"
+              class="product-title cursor-pointer"
+              v-tooltip="{ value: product.title, autoHide: false }"
+              @click="router.push(`/product/detail?id=${product.id}`)"
             >
-              (Có ẢNH THẬT) Tranh Treo Tường Canvas,Bộ 3 tranh decor phòng khách,cầu
-              thang,phòng ngủ đẹp⚡FREE SHIP⚡Ngày tết,sửa giá
+              {{ product.title }}
             </span>
           </template>
           <template #subtitle>
-            <span class="price-common">Giá 150.000đ</span>
+            <span class="price-common"
+              >{{ formatPrice(product.price_start) }}-
+              {{ formatPrice(product.price_end) }}</span
+            >
           </template>
           <template #footer>
             <div class="flex gap-3 mt-1">
@@ -132,35 +148,49 @@
             :options="sortsType"
             optionLabel="name"
             placeholder="Sắp xếp sản phẩm"
+            @change="() => handleSort()"
           />
         </div>
         <div class="actions-right">
           <IconField iconPosition="left">
             <InputIcon class="pi pi-search"> </InputIcon>
-            <InputText placeholder="Nhập từ khóa tìm kiếm" class="input-search" />
+            <InputText
+              placeholder="Nhập từ khóa tìm kiếm"
+              class="input-search"
+              v-model="keywordSearch"
+              @keydown.enter="handleSearch"
+            />
           </IconField>
         </div>
       </div>
       <div class="products">
-        <Card class="product-card-custom" v-for="(item, index) in 32" :key="index" @click="router.push('/product/detail')">
+        <Card
+          class="product-card-custom"
+          v-for="(product, index) in products"
+          :key="index"
+        >
           <template #header>
             <img
-              class="image-card"
+              class="image-card cursor-pointer"
               alt="Products image"
-              src="https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lh8tf0g540fmdc_tn.webp"
+              :src="product.avatar"
+              @click="router.push(`/product/detail?id=${product.id}`)"
             />
           </template>
           <template #title>
             <span
-              class="product-title"
-              v-tooltip="{ value: 'Enter your username', autoHide: false }"
+              class="product-title cursor-pointer"
+              v-tooltip="{ value: product.title, autoHide: false }"
+              @click="router.push(`/product/detail?id=${product.id}`)"
             >
-              (Có ẢNH THẬT) Tranh Treo Tường Canvas,Bộ 3 tranh decor phòng khách,cầu
-              thang,phòng ngủ đẹp⚡FREE SHIP⚡Ngày tết,sửa giá
+              {{ product.title }}
             </span>
           </template>
           <template #subtitle>
-            <span class="price-common">Giá 150.000đ</span>
+            <span class="price-common"
+              >{{ formatPrice(product.price_start) }}-
+              {{ formatPrice(product.price_end) }}</span
+            >
           </template>
           <template #footer>
             <div class="flex gap-3 mt-1">
@@ -173,17 +203,24 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { PhotoService } from "@/service/PhotoService";
-import { ProductService } from "@/service/ProductService";
+import { ProductServiceApi } from "~/service/ProductServiceApi";
+import type { Product } from "~/interface/product";
 
-const router = useRouter()
+const router = useRouter();
 const actionsSort = ref();
+const products = ref<Product[] | []>([]);
+const images = ref();
+const keywordSearch = ref();
+const suggestedProducts = ref()
+const topSoldProducts = ref()
+
 const sortsType = ref([
-  { name: "Giá từ thấp đến cao", code: "NY" },
-  { name: "Giá từ cao đến thấp", code: "RM" },
-  { name: "Mức độ bán chạy nhất", code: "LDN" },
+  { name: "Giá từ thấp đến cao", code: "NY" ,type : 1},
+  { name: "Giá từ cao đến thấp", code: "RM" ,type : 2},
+  { name: "Mức độ bán chạy nhất", code: "LDN" ,type : 3},
 ]);
 
 const typeProduct = ref([
@@ -201,7 +238,6 @@ const typeProduct = ref([
   { id: 12, name: "Mẫu tròn, tráng gương" },
 ]);
 
-const products = ref();
 const responsiveOptions = ref([
   { breakpoint: "1400px", numVisible: 2, numScroll: 1 },
   { breakpoint: "1199px", numVisible: 3, numScroll: 1 },
@@ -209,30 +245,67 @@ const responsiveOptions = ref([
   { breakpoint: "575px", numVisible: 1, numScroll: 1 },
 ]);
 
-const getSeverity = (status) => {
-  switch (status) {
-    case "INSTOCK":
-      return "success";
-    case "LOWSTOCK":
-      return "warning";
-    case "OUTOFSTOCK":
-      return "danger";
-    default:
-      return null;
-  }
+function formatPrice(value: number) {
+  const formattedValue = new Intl.NumberFormat("vi-VN").format(value);
+  return `${formattedValue}đ`;
+}
+
+const getListProducts = async () => {
+  const response: any = await ProductServiceApi.getProductsData();
+  products.value = response;
 };
 
-const images = ref();
+const getSuggestedProducts = async () => {
+  const response: any = await ProductServiceApi.topSoldProducts();
+  suggestedProducts.value = response;
+};
+const getTopSoldProducts = async () => {
+  const response: any = await ProductServiceApi.topSoldProducts();
+  topSoldProducts.value = response;
+};
+
+// ACTION PRODUCTS 
+const handleSearch = () => {
+  if(keywordSearch.value == '')
+  {
+    getListProducts()
+  }
+  const response = products.value.filter((product) =>
+    product.title.toLowerCase().includes(keywordSearch.value.toLowerCase())
+  );
+  products.value = response
+};
+
+const handleSort = () => {
+  if(actionsSort.value.type == 2)
+  {
+    products.value.sort((a, b) => a.price_end - b.price_end);
+  }
+  if(actionsSort.value.type == 2)
+  {
+    products.value.sort((a, b) => b.price_end - a.price_end);
+  }
+  if(actionsSort.value.type == 3)
+  {
+    products.value.sort((a, b) => b.sold - a.sold);
+  }
+}
 onMounted(() => {
   PhotoService.getImages().then((data) => (images.value = data));
-  ProductService.getProductsSmall().then((data) => (products.value = data.slice(0, 9)));
+  getListProducts();
+  getSuggestedProducts()
+  getTopSoldProducts()
 });
 </script>
 
 <style scoped lang="scss">
+.cursor-pointer {
+  cursor: pointer !important;
+}
 .price-common {
   color: red !important;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 1rem;
 }
 .product-card-custom {
   width: 22%;
@@ -303,6 +376,7 @@ onMounted(() => {
   }
   .info-product {
     display: flex;
+    align-items: center;
     justify-content: space-between;
   }
   .card-style {
@@ -322,15 +396,15 @@ onMounted(() => {
       display: flex;
       gap: 1rem;
     }
-    .input-search{
-      width: 17rem
+    .input-search {
+      width: 17rem;
     }
   }
   .products {
     display: flex;
-    justify-content: space-between;
+    justify-content: start;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 2rem;
     .product-title,
     .p-card-title {
       font-size: 0.9rem !important;
@@ -340,8 +414,8 @@ onMounted(() => {
 .best-seller {
   .products {
     display: flex;
-    justify-content: space-between;
-    gap: 1rem;
+    justify-content: start;
+    gap: 2rem;
     flex-wrap: wrap;
     .product-title,
     .p-card-title {
@@ -390,14 +464,12 @@ onMounted(() => {
   .actions {
     flex-direction: column;
     gap: 1rem;
-    :deep(.p-dropdown)
-    {
+    :deep(.p-dropdown) {
       width: 100%;
     }
-    .input-search{
+    .input-search {
       width: 100% !important;
     }
-
   }
   .product-card-custom {
     width: 100%;
@@ -411,7 +483,7 @@ onMounted(() => {
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 3rem  !important;
+      height: 3rem !important;
       padding: 0 !important;
       width: 100% !important;
       p {

@@ -16,6 +16,10 @@ const config: NuxtConfig = {
       ripple: true,
     },
   },
+  devServer: {
+      host: '0.0.0.0',
+      port: 3000, 
+  },
   css: [
     'primevue/resources/themes/aura-light-green/theme.css',
     '@/assets/css/index.scss',
