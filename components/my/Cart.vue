@@ -17,6 +17,12 @@
       >
         <template #header>
           <div class="flex-container">
+            <IconField iconPosition="right" class="input-search">
+              <InputIcon>
+                <i class="pi pi-search" />
+              </InputIcon>
+              <InputText v-model="filters['global'].value" placeholder="Tìm kiếm..." />
+            </IconField>
             <Button
               class="download-svg"
               label="Tải về"
@@ -24,17 +30,11 @@
               severity="help"
               @click="exportCSV($event)"
             />
-            <IconField iconPosition="left" class="input-search">
-              <InputIcon>
-                <i class="pi pi-search" />
-              </InputIcon>
-              <InputText v-model="filters['global'].value" placeholder="Search..." />
-            </IconField>
           </div>
         </template>
 
         <Column selectionMode="multiple" style="width: 3rem" :exportable="false"></Column>
-        <Column field="id" header="STT"  style="min-width: 8rem">
+        <Column field="id" header="STT" style="min-width: 8rem">
           <template #body="{ index }">{{ index + 1 }}</template>
         </Column>
         <Column header="Ảnh" style="min-width: 10rem">
@@ -152,6 +152,7 @@ import { useCartStore } from "~/store/cartStore";
 // VARIABLE
 const toast = useToast();
 const cartStore = useCartStore();
+const router = useRouter()
 const dt = ref();
 const productsInsideCart = ref();
 const confirmPaymentDialog = ref(false);
@@ -181,7 +182,6 @@ const handleGetProductsForCard = () => {
   const cartString = localStorage.getItem("cart");
   let response = cartString ? JSON.parse(cartString) : [];
   productsInsideCart.value = response;
-  console.log(productsInsideCart.value);
 };
 
 // DELETE
@@ -220,10 +220,17 @@ const confirmPayment = () => {
   confirmPaymentDialog.value = true;
 };
 const handleConfirmPayment = () => {
-  console.log("payment : " + selectedProducts.value[0].code);
   confirmPaymentDialog.value = false;
-  selectedProducts.value = null;
-  // đến màn thanh toán
+  try {
+    localStorage.setItem("productPayment", JSON.stringify(selectedProducts.value));
+  } catch (error) {
+    toast.add({
+      severity: "error",
+      detail: "Đã xảy ra lỗi vui lòng thử lại",
+      summary: "Thông báo",
+      life: 3000,
+    });
+  }
 };
 
 onMounted(() => {
@@ -279,19 +286,18 @@ onMounted(() => {
   .download-svg {
     display: none;
   }
-  .input-search{
+  .input-search {
     width: 100%;
   }
   :deep(.p-inputtext) {
     width: 100%;
   }
-  .container-button-action{
+  .container-button-action {
     justify-content: center;
-    button{
-        width: 100%;
-        margin-top: 2rem;
+    button {
+      width: 100%;
+      margin-top: 2rem;
     }
   }
-
 }
 </style>
