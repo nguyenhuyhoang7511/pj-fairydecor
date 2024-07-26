@@ -1,6 +1,10 @@
 <template>
   <div class="container-cart">
-    <h5 class="title-header" style="text-align: center; margin-bottom: 2rem" v-if="productsInsideCart && productsInsideCart.length > 0">
+    <h5
+      class="title-header"
+      style="text-align: center; margin-bottom: 2rem"
+      v-if="productsInsideCart && productsInsideCart.length > 0"
+    >
       CHI TIẾT GIỎ HÀNG
     </h5>
 
@@ -14,12 +18,13 @@
         <template #header>
           <div class="flex-container">
             <Button
-              label="Export csv"
+              class="download-svg"
+              label="Tải về"
               icon="pi pi-upload"
               severity="help"
               @click="exportCSV($event)"
             />
-            <IconField iconPosition="left">
+            <IconField iconPosition="left" class="input-search">
               <InputIcon>
                 <i class="pi pi-search" />
               </InputIcon>
@@ -32,7 +37,6 @@
         <Column field="id" header="Thứ tự" sortable style="min-width: 8rem">
           <template #body="{ index }">{{ index + 1 }}</template>
         </Column>
-        <Column field="title" header="Tiêu đề" style="min-width: 16rem"></Column>
         <Column header="Ảnh" style="min-width: 10rem">
           <template #body="slotProps">
             <Image
@@ -44,6 +48,7 @@
             />
           </template>
         </Column>
+        <Column field="title" header="Tiêu đề" style="min-width: 16rem"></Column>
         <Column field="price" header="Giá tiền" sortable style="min-width: 8rem">
           <template #body="slotProps">
             <span class="product-price"> {{ formatPrice(slotProps.data.price) }}</span>
@@ -120,7 +125,7 @@
         />
       </template>
     </Dialog>
-    
+
     <Dialog
       v-model:visible="confirmDeleteProductDialog"
       :style="{ width: '450px' }"
@@ -133,12 +138,7 @@
       </div>
       <template #footer>
         <Button label="Huỷ bỏ" text @click="confirmDeleteProductDialog = false" />
-        <Button
-          label="Xác nhận"
-          icon="pi pi-check"
-          text
-          @click="handleDeteleProduct"
-        />
+        <Button label="Xác nhận" icon="pi pi-check" text @click="handleDeteleProduct" />
       </template>
     </Dialog>
   </div>
@@ -155,7 +155,7 @@ const cartStore = useCartStore();
 const dt = ref();
 const productsInsideCart = ref();
 const confirmPaymentDialog = ref(false);
-const productForDelete = ref()
+const productForDelete = ref();
 const confirmDeleteProductDialog = ref(false);
 const product = ref({});
 const selectedProducts = ref();
@@ -186,11 +186,11 @@ const handleGetProductsForCard = () => {
 
 // DELETE
 const confirmDeleteProduct = (product) => {
-    productForDelete.value = product
-    confirmDeleteProductDialog.value = true;
+  productForDelete.value = product;
+  confirmDeleteProductDialog.value = true;
 };
 
-const handleDeteleProduct = () => {   
+const handleDeteleProduct = () => {
   try {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
@@ -220,7 +220,7 @@ const confirmPayment = () => {
   confirmPaymentDialog.value = true;
 };
 const handleConfirmPayment = () => {
-  console.log("payment : " +selectedProducts.value[0].code);
+  console.log("payment : " + selectedProducts.value[0].code);
   confirmPaymentDialog.value = false;
   selectedProducts.value = null;
   // đến màn thanh toán
@@ -232,9 +232,9 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.show-cart-empty{
-    display: flex;
-    justify-content: center;
+.show-cart-empty {
+  display: flex;
+  justify-content: center;
 }
 .container-button-action {
   display: flex;
@@ -273,5 +273,25 @@ onMounted(() => {
 .product-price {
   color: brown;
   font-weight: 500;
+}
+
+@media screen and (max-width: 575px) {
+  .download-svg {
+    display: none;
+  }
+  .input-search{
+    width: 100%;
+  }
+  :deep(.p-inputtext) {
+    width: 100%;
+  }
+  .container-button-action{
+    justify-content: center;
+    button{
+        width: 100%;
+        margin-top: 2rem;
+    }
+  }
+
 }
 </style>

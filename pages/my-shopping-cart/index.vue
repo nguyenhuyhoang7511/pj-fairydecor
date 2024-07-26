@@ -11,7 +11,7 @@
           >
             <a :href="href" v-bind="props.action" @click="navigate">
               <span :class="[item.icon, 'text-color']" />
-              <span class="text-primary font-semibold">{{ item.label }}</span>
+              <span class="text-primary font-semibold ml-10">{{ item.label }}</span>
             </a>
           </router-link>
           <a v-else :href="item.url" :target="item.target" v-bind="props.action">
@@ -29,6 +29,7 @@ import { ref } from "vue";
 
 const home = ref({
   icon: "pi pi-home",
+  label: 'Trang chủ',
   route: "/",
 });
 const items = ref([

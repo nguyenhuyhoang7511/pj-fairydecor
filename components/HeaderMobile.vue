@@ -2,19 +2,22 @@
   <div>
     <header class="pr-14 flex items-center header-style">
       <div class="container-logo" @click="router.push('/')">
-        <img
-          class="image-logo"
-          src="https://inuvdp.com/wp-content/uploads/2022/05/logo-la-co-03.jpg"
-          alt="logo"
-        />
+        <div class="logo-style">
+          <i class="pi pi-star-fill"></i>
+        </div>
         <div class="tablet-none company-name">
           <p class="name">Fairy-decor</p>
           <p>Bán tranh treo tường</p>
         </div>
       </div>
-      <Button type="button" icon="pi pi-bars" @click="toggleMenu" aria-haspopup="true" aria-controls="overlay_menu" />
+      <Button
+        type="button"
+        icon="pi pi-bars"
+        @click="toggleMenu"
+        aria-haspopup="true"
+        aria-controls="overlay_menu"
+      />
       <Menu ref="menu" id="overlay_menu" :model="listMenu" :popup="true" />
-
     </header>
   </div>
 </template>
@@ -34,49 +37,66 @@ watch(
 
 const menu = ref();
 const listMenu = ref([
-    {
-        items: [
-            {
-                label: 'Giỏ hàng',
-                icon: 'pi pi-cart-plus'
-            },
-            {
-                label: 'Liên hệ',
-                icon: 'pi pi-whatsapp',
-                command : () =>{
-                  handleRedirect()
-                }
-            },
-            {
-                label: 'Hướng dẫn',
-                icon: 'pi pi-file-check'
-            }
-        ]
-    }
+  {
+    items: [
+      {
+        label: "Giỏ hàng",
+        icon: "pi pi-cart-plus",
+        command: () =>{
+          router.push('/my-shopping-cart')
+        }
+      },
+      {
+        label: "Liên hệ",
+        icon: "pi pi-whatsapp",
+        command: () => {
+          handleRedirect();
+        },
+      },
+      {
+        label: "Hướng dẫn",
+        icon: "pi pi-file-check",
+      },
+    ],
+  },
 ]);
 
-const handleRedirect = () =>{
-  window.open('https://zalo.me/0333568062', '_blank');
-}
+const handleRedirect = () => {
+  window.open("https://zalo.me/0333568062", "_blank");
+};
 
 const toggleMenu = (event: any) => {
-    menu.value.toggle(event);
+  menu.value.toggle(event);
 };
 </script>
 
 <style lang="scss" scoped>
-.container-logo{
-  img{
+.logo-style {
+  width: 66px;
+  height: 46px;
+  background-color: brown;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: yellow;
+  border-radius: 4px;
+  margin: .5rem;
+  i {
+    font-size: 1.5rem;
+  }
+}
+.container-logo {
+  img {
     width: 72px;
     height: 72px;
     margin-right: 12px;
   }
-  .name{
+  .name {
     font-size: 2rem;
     font-weight: bold;
     font-family: system-ui;
   }
-  p{
+  p {
     margin: 0;
   }
   display: flex;

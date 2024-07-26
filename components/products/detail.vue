@@ -94,7 +94,7 @@
             <template #decrementbuttonicon> - </template>
           </InputNumber>
         </div>
-        <p class="ml-30">{{ product?.quantity }} sản phẩm có sẵn</p>
+        <p class="ml-30 number-quantity-sp">{{ product?.quantity }} sản phẩm có sẵn</p>
       </div>
 
       <div class="container-btn">
@@ -566,6 +566,16 @@ onMounted(() => {
         width: 100% !important;
       }
     }
+
+    .quantity {
+      .number-quantity-sp{
+        margin-left: 0 !important;
+      }
+    }
+    .list-size ,.item-size{
+          width: 100% !important;
+    }
+
   }
 }
 </style>

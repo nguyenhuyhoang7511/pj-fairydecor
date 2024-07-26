@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { useCartStore } from '~/store/cartStore';
+import { useCartStore } from "~/store/cartStore";
 
 const menu = ref();
-const productsInsideCart = ref()
+const productsInsideCart = ref();
 const cartStore = useCartStore();
 const cartCount = computed(() => cartStore.cartCount.toString());
-const router = useRouter()
-const toggle = (event : any) => {
+const router = useRouter();
+const toggle = (event: any) => {
   menu.value.toggle(event);
-  handleGetProductsForCard()
+  handleGetProductsForCard();
 };
 const handleRedirect = () => {
   window.open("https://zalo.me/0333568062", "_blank");
@@ -20,10 +20,14 @@ function formatPrice(value: number) {
 }
 
 const handleGetProductsForCard = () => {
-  const cartString = localStorage.getItem('cart');
+  const cartString = localStorage.getItem("cart");
   let response = cartString ? JSON.parse(cartString) : [];
-  productsInsideCart.value = response
-}
+  productsInsideCart.value = response;
+};
+const handleViewAll = () => {
+  router.push("/my-shopping-cart");
+  menu.value.close()
+};
 </script>
 
 <template>
@@ -32,11 +36,9 @@ const handleGetProductsForCard = () => {
       <nav>
         <div class="nav-brand">
           <div class="container-logo" @click="router.push('/')">
-            <img
-              class="image-logo"
-              src="https://inuvdp.com/wp-content/uploads/2022/05/logo-la-co-03.jpg"
-              alt="logo"
-            />
+            <div class="logo-style">
+            <i class="pi pi-star-fill"></i>
+            </div>
             <div class="tablet-none company-name">
               <p>Bán tranh treo tường</p>
               <h4>Fairy-decor</h4>
@@ -57,7 +59,7 @@ const handleGetProductsForCard = () => {
               aria-haspopup="true"
               aria-controls="overlay_menu"
               :badge="cartCount"
-              badgeSeverity="secondary" 
+              badgeSeverity="secondary"
             />
             <Button class="btn btn-style" label="Liên hệ" @click="handleRedirect" />
             <Menu ref="menu" id="overlay_menu" :popup="true">
@@ -66,18 +68,23 @@ const handleGetProductsForCard = () => {
                   <p class="title-header">Danh sách sản phẩm</p>
                   <div class="container-item" v-for="product in productsInsideCart">
                     <div class="left">
-                      <img
-                        class="image"
-                        :src="product.image"
-                        alt=""
-                      />
+                      <img class="image" :src="product.image" alt="" />
                     </div>
                     <div class="right">
                       <p class="name two-lines-ellipsis">{{ product.title }}</p>
-                      <p class="price">{{ formatPrice(product.price) }} ({{ product.total }} sản phẩm) | {{ product.category }}</p> 
+                      <p class="price">
+                        {{ formatPrice(product.price) }} ({{ product.total }} sản phẩm) |
+                        {{ product.category }}
+                      </p>
                     </div>
                   </div>
-                  <div class="view-all" style="text-align: center; font-size: .8rem; cursor:pointer" @click="router.push('/my-shopping-cart')">Xem tất cả</div>
+                  <div
+                    class="view-all"
+                    style="text-align: center; font-size: 0.8rem; cursor: pointer"
+                    @click="handleViewAll"
+                  >
+                    Xem tất cả
+                  </div>
                 </div>
               </template>
             </Menu>
@@ -89,14 +96,28 @@ const handleGetProductsForCard = () => {
 </template>
 
 <style scoped lang="scss">
+.logo-style{
+  width: 66px;
+  height: 46px;
+  background-color: brown;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: yellow;
+  margin-right: .7rem;
+  border-radius: 4px;
+  i{
+    font-size: 1.5rem;
+  }
+}
 .two-lines-ellipsis {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.5; 
-  max-height: 3em; 
+  line-height: 1.5;
+  max-height: 3em;
 }
 .container-cart-inside {
   max-height: 35rem;
@@ -118,7 +139,7 @@ const handleGetProductsForCard = () => {
     padding: 0.5rem 0;
     border-top: 1px solid #ccc;
     .left {
-      .image{
+      .image {
         width: 55px;
         height: 64px;
       }
@@ -137,7 +158,7 @@ const handleGetProductsForCard = () => {
       }
     }
   }
-  .view-all:hover{
+  .view-all:hover {
     text-decoration: underline;
   }
 }
@@ -175,9 +196,10 @@ header {
     cursor: pointer;
   }
   img {
-    width: 46px;
+    width: 66px;
     height: 46px;
     margin-right: 12px;
+    border-radius: 8px;
   }
   p,
   h4 {
