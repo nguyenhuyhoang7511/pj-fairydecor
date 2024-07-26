@@ -59,10 +59,7 @@
         >
           <template #item="slotProps">
             <div class="card-style">
-              <div
-                class="mb-3 cursor-pointer"
-                @click="router.push(`/product/detail?id=${slotProps.data.id}`)"
-              >
+              <div class="mb-3">
                 <div>
                   <img
                     :src="slotProps.data.avatar"
@@ -77,10 +74,7 @@
                   />
                 </div>
               </div>
-              <div
-                class="mb-3 font-medium cursor-pointer"
-                @click="router.push(`/product/detail?id=${slotProps.data.id}`)"
-              >
+              <div class="mb-3 font-medium">
                 {{ slotProps.data.name }}
               </div>
               <div class="info-product">
@@ -89,8 +83,12 @@
                   {{ formatPrice(slotProps.data.price_end) }}
                 </div>
                 <span>
-                  <Button icon="pi pi-heart" severity="secondary" outlined />
-                  <Button icon="pi pi-shopping-cart" class="ml-2" />
+                  <Button
+                    icon="pi pi-info-circle"
+                    label="Chi tiết"
+                    class="ml-2 cursor-pointer"
+                    @click="router.push(`/product/detail?id=${slotProps.data.id}`)"
+                  />
                 </span>
               </div>
             </div>
@@ -108,18 +106,12 @@
           :key="index"
         >
           <template #header>
-            <img
-              class="image-card cursor-pointer"
-              :src="product.avatar"
-              :alt="product.avatar"
-              @click="router.push(`/product/detail?id=${product.id}`)"
-            />
+            <img class="image-card" :src="product.avatar" :alt="product.avatar" />
           </template>
           <template #title>
             <span
-              class="product-title cursor-pointer"
+              class="product-title"
               v-tooltip="{ value: product.title, autoHide: false }"
-              @click="router.push(`/product/detail?id=${product.id}`)"
             >
               {{ product.title }}
             </span>
@@ -132,7 +124,12 @@
           </template>
           <template #footer>
             <div class="flex gap-3 mt-1">
-              <Button icon="pi pi-shopping-cart" label="Thêm giỏ hàng" class="w-full" />
+              <Button
+                icon="pi pi-info-circle"
+                label="Xem chi tiết"
+                class="w-full cursor-pointer"
+                @click="router.push(`/product/detail?id=${product.id}`)"
+              />
             </div>
           </template>
         </Card>
@@ -170,18 +167,12 @@
           :key="index"
         >
           <template #header>
-            <img
-              class="image-card cursor-pointer"
-              alt="Products image"
-              :src="product.avatar"
-              @click="router.push(`/product/detail?id=${product.id}`)"
-            />
+            <img class="image-card" alt="Products image" :src="product.avatar" />
           </template>
           <template #title>
             <span
-              class="product-title cursor-pointer"
+              class="product-title"
               v-tooltip="{ value: product.title, autoHide: false }"
-              @click="router.push(`/product/detail?id=${product.id}`)"
             >
               {{ product.title }}
             </span>
@@ -194,7 +185,12 @@
           </template>
           <template #footer>
             <div class="flex gap-3 mt-1">
-              <Button icon="pi pi-shopping-cart" label="Thêm giỏ hàng" class="w-full" />
+              <Button
+                icon="pi pi-info-circle"
+                label="Xem chi tiết"
+                class="w-full cursor-pointer"
+                @click="router.push(`/product/detail?id=${product.id}`)"
+              />
             </div>
           </template>
         </Card>
@@ -214,13 +210,13 @@ const actionsSort = ref();
 const products = ref<Product[] | []>([]);
 const images = ref();
 const keywordSearch = ref();
-const suggestedProducts = ref()
-const topSoldProducts = ref()
+const suggestedProducts = ref();
+const topSoldProducts = ref();
 
 const sortsType = ref([
-  { name: "Giá từ thấp đến cao", code: "NY" ,type : 1},
-  { name: "Giá từ cao đến thấp", code: "RM" ,type : 2},
-  { name: "Mức độ bán chạy nhất", code: "LDN" ,type : 3},
+  { name: "Giá từ thấp đến cao", code: "NY", type: 1 },
+  { name: "Giá từ cao đến thấp", code: "RM", type: 2 },
+  { name: "Mức độ bán chạy nhất", code: "LDN", type: 3 },
 ]);
 
 const typeProduct = ref([
@@ -264,37 +260,33 @@ const getTopSoldProducts = async () => {
   topSoldProducts.value = response;
 };
 
-// ACTION PRODUCTS 
+// ACTION PRODUCTS
 const handleSearch = () => {
-  if(keywordSearch.value == '')
-  {
-    getListProducts()
+  if (keywordSearch.value == "") {
+    getListProducts();
   }
   const response = products.value.filter((product) =>
     product.title.toLowerCase().includes(keywordSearch.value.toLowerCase())
   );
-  products.value = response
+  products.value = response;
 };
 
 const handleSort = () => {
-  if(actionsSort.value.type == 2)
-  {
+  if (actionsSort.value.type == 2) {
     products.value.sort((a, b) => a.price_end - b.price_end);
   }
-  if(actionsSort.value.type == 2)
-  {
+  if (actionsSort.value.type == 2) {
     products.value.sort((a, b) => b.price_end - a.price_end);
   }
-  if(actionsSort.value.type == 3)
-  {
+  if (actionsSort.value.type == 3) {
     products.value.sort((a, b) => b.sold - a.sold);
   }
-}
+};
 onMounted(() => {
   PhotoService.getImages().then((data) => (images.value = data));
   getListProducts();
-  getSuggestedProducts()
-  getTopSoldProducts()
+  getSuggestedProducts();
+  getTopSoldProducts();
 });
 </script>
 
@@ -404,7 +396,7 @@ onMounted(() => {
     display: flex;
     justify-content: start;
     flex-wrap: wrap;
-    gap: 2rem;
+    gap: 2.5rem;
     .product-title,
     .p-card-title {
       font-size: 0.9rem !important;
@@ -415,7 +407,7 @@ onMounted(() => {
   .products {
     display: flex;
     justify-content: start;
-    gap: 2rem;
+    gap: 2.5rem;
     flex-wrap: wrap;
     .product-title,
     .p-card-title {
@@ -460,6 +452,12 @@ onMounted(() => {
 @media screen and (max-width: 768px) {
   .image-item {
     height: unset;
+  }
+  .info-product {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
   }
   .actions {
     flex-direction: column;

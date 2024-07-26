@@ -56,7 +56,7 @@ const listMenu = ref([
 ]);
 
 const handleRedirect = () =>{
-  window.open('https://zalo.me/0356579021', '_blank');
+  window.open('https://zalo.me/0333568062', '_blank');
 }
 
 const toggleMenu = (event: any) => {

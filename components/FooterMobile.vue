@@ -1,7 +1,7 @@
 <template>
   <footer>
     <div class="flex justify-between items-center px-6 pt-10">
-      <p class="my-0">Số điện thoại : 0356579021</p>
+      <p class="my-0">Số điện thoại : 0333568062</p>
     </div>
     <Divider />
     <div class="flex justify-between items-center px-6">

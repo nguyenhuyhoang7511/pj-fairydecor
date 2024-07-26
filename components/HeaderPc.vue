@@ -1,32 +1,19 @@
 <script setup lang="ts">
+import { useCartStore } from '~/store/cartStore';
+
 const menu = ref();
 const productsInsideCart = ref()
-const items = ref([
-  {
-    label: "Options",
-    items: [
-      {
-        label: "Refresh",
-        icon: "pi pi-refresh",
-      },
-      {
-        label: "Export",
-        icon: "pi pi-upload",
-      },
-    ],
-  },
-]);
-
+const cartStore = useCartStore();
+const cartCount = computed(() => cartStore.cartCount.toString());
+const router = useRouter()
 const toggle = (event : any) => {
   menu.value.toggle(event);
+  handleGetProductsForCard()
 };
 const handleRedirect = () => {
-  window.open("https://zalo.me/0356579021", "_blank");
+  window.open("https://zalo.me/0333568062", "_blank");
 };
-const inputSearch = reactive({
-  target: "",
-  keyword: "",
-});
+
 function formatPrice(value: number) {
   const formattedValue = new Intl.NumberFormat("vi-VN").format(value);
   return `${formattedValue}đ`;
@@ -37,10 +24,6 @@ const handleGetProductsForCard = () => {
   let response = cartString ? JSON.parse(cartString) : [];
   productsInsideCart.value = response
 }
-
-onMounted(() =>{
-  handleGetProductsForCard()
-})
 </script>
 
 <template>
@@ -48,7 +31,7 @@ onMounted(() =>{
     <header>
       <nav>
         <div class="nav-brand">
-          <div class="container-logo">
+          <div class="container-logo" @click="router.push('/')">
             <img
               class="image-logo"
               src="https://inuvdp.com/wp-content/uploads/2022/05/logo-la-co-03.jpg"
@@ -73,6 +56,8 @@ onMounted(() =>{
               @click="toggle"
               aria-haspopup="true"
               aria-controls="overlay_menu"
+              :badge="cartCount"
+              badgeSeverity="secondary" 
             />
             <Button class="btn btn-style" label="Liên hệ" @click="handleRedirect" />
             <Menu ref="menu" id="overlay_menu" :popup="true">
@@ -89,7 +74,7 @@ onMounted(() =>{
                     </div>
                     <div class="right">
                       <p class="name two-lines-ellipsis">{{ product.title }}</p>
-                      <p class="price">{{ formatPrice(product.price) }} ({{ product.total }} sản phẩm)</p> 
+                      <p class="price">{{ formatPrice(product.price) }} ({{ product.total }} sản phẩm) | {{ product.category }}</p> 
                     </div>
                   </div>
                   <div class="view-all" style="text-align: center; font-size: .8rem; cursor:pointer">Xem tất cả</div>
@@ -131,9 +116,13 @@ onMounted(() =>{
     padding: 0.5rem 0;
     border-top: 1px solid #ccc;
     .left {
-      width: 40%;
+      .image{
+        width: 55px;
+        height: 64px;
+      }
     }
     .right {
+      width: 80%;
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
@@ -181,6 +170,7 @@ header {
   .container-logo {
     display: flex;
     align-items: center;
+    cursor: pointer;
   }
   img {
     width: 46px;

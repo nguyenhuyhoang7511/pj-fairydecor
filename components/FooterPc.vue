@@ -2,7 +2,7 @@
   <footer>
     <div class="flex">
       <div class="logo">
-        <p class="mb-4 mt-12">Số điện thoại : 0356579021</p>
+        <p class="mb-4 mt-12">Số điện thoại : 0333568062</p>
         <p class="mb-4 mt-0">Email liên hệ: nguyenhoang080721@gmail.com</p>
         <small>© 2024. Ha Noi- Viet Nam.</small>
       </div>

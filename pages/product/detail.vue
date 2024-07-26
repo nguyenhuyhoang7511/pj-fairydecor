@@ -29,11 +29,11 @@ import { ref } from "vue";
 
 const home = ref({
   icon: "pi pi-home",
-  route: "/introduction",
+  route: "/",
 });
 const items = ref([
   { label: "Sản phẩm" },
-  { label: "Chi tiết sản phẩm", route: "/" },
+  { label: "Chi tiết sản phẩm" },
 ]);
 </script>
 

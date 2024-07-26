@@ -157,6 +157,7 @@
 import { onMounted, ref } from "vue";
 import { ProductServiceApi } from "~/service/ProductServiceApi";
 import type { Product, Option, ProductType } from "~/interface/product";
+import { useCartStore } from "~/store/cartStore";
 
 const product = ref<Product | null>(null);
 const rating = ref(5);
@@ -181,6 +182,7 @@ const selectedSize = ref<Option>({
   value: "",
 });
 const toast = useToast();
+const cartStore = useCartStore();
 
 const updateQuantity = (e: any) => {
   const priceCurrent = Number(priceProduct.value) / e.value;
@@ -210,27 +212,43 @@ const handleAddToCart = () => {
     price: priceProduct.value,
     total: quantity.value,
     total_price: priceProduct.value && priceProduct.value * quantity.value,
-    size: selectedSize.value.value,
+    size: selectedSize.value.value ? selectedSize.value.value : product.value?.option[0].value,
   };
+  const validate = initProduct.category ;
 
-  const cartString = localStorage.getItem("cart");
-  let cart = cartString ? JSON.parse(cartString) : [];
+  if (validate) {
+    const cartString = localStorage.getItem("cart");
+    let cart = cartString ? JSON.parse(cartString) : [];
 
-  const productExists = cart.some((item : any) => item.id === product.value?.id);
-  if (!productExists) {
-    cart.push(initProduct);
-    localStorage.setItem("cart", JSON.stringify(cart));
-
-    toast.add({
-      severity: "success",
-      detail: "Đã thêm sản phẩm vào giỏ hàng",
-      summary: "Thông báo",
-      life: 3000,
+    const productExists = cart.some((item: any) => {
+      return (
+        item.id === initProduct.id && item.category === initProduct.category &&  item.size === initProduct.size 
+      );
     });
+
+    if (!productExists) {
+      cart.push(initProduct);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      cartStore.addProduct();
+
+      toast.add({
+        severity: "success",
+        detail: "Đã thêm sản phẩm vào giỏ hàng",
+        summary: "Thông báo",
+        life: 3000,
+      });
+    } else {
+      toast.add({
+        severity: "warn",
+        detail: "Sản phẩm đã tồn tại trong giỏ hàng",
+        summary: "Cảnh báo",
+        life: 3000,
+      });
+    }
   } else {
     toast.add({
       severity: "warn",
-      detail: "Sản phẩm đã tồn tại trong giỏ hàng",
+      detail: "Bạn cần phải lựa chọn mẫu sản phẩm",
       summary: "Cảnh báo",
       life: 3000,
     });
@@ -294,6 +312,9 @@ onMounted(() => {
   }
   .description {
     font-size: 0.9rem;
+    p{
+      font-size: 0.5rem;
+    }
   }
   .info {
     font-size: 0.9rem;
@@ -468,6 +489,7 @@ onMounted(() => {
 
 .detail-product {
   .description {
+    font-size: 12px;
     p {
       font-size: 12px;
     }
