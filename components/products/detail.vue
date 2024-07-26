@@ -206,6 +206,7 @@ const handleSelectedCategory = (item: ProductType) => {
 const handleAddToCart = () => {
   const initProduct = {
     id: product.value?.id,
+    code : generateProductCode(),
     title: product.value?.title,
     image: selectedCategory.value.image,
     category: selectedCategory.value.name,
@@ -287,6 +288,16 @@ function formatCurrencyVND(amount: any) {
     return amount.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
   }
 }
+
+
+const generateProductCode = () => {
+  const timestamp = Date.now().toString(); 
+  const randomSuffix = Math.random().toString(36).substring(2, 8); 
+  const newCode = timestamp.slice(-4) + randomSuffix; 
+
+  console.log(newCode);
+  return newCode;
+};
 onMounted(() => {
   getProductDetail();
 });

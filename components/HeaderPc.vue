@@ -77,7 +77,7 @@ const handleGetProductsForCard = () => {
                       <p class="price">{{ formatPrice(product.price) }} ({{ product.total }} sản phẩm) | {{ product.category }}</p> 
                     </div>
                   </div>
-                  <div class="view-all" style="text-align: center; font-size: .8rem; cursor:pointer">Xem tất cả</div>
+                  <div class="view-all" style="text-align: center; font-size: .8rem; cursor:pointer" @click="router.push('/my-shopping-cart')">Xem tất cả</div>
                 </div>
               </template>
             </Menu>
@@ -99,6 +99,8 @@ const handleGetProductsForCard = () => {
   max-height: 3em; 
 }
 .container-cart-inside {
+  max-height: 35rem;
+  overflow: scroll;
   padding: 0.5rem 1rem;
   width: 25rem;
   p {

@@ -40,4 +40,9 @@ const { t } = useI18n();
 :root{
   --p-focus-ring-color: brown 
 }
+.p-checkbox.p-highlight .p-checkbox-box{
+  color: brown;
+  background: brown;
+  border-color: brown;
+}
 </style>

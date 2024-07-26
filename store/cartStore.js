@@ -12,5 +12,8 @@ export const useCartStore = defineStore('cart', {
     addProduct() {
       this.cartNumber++;
     },
+    deleteProduct() {
+      this.cartNumber--;
+    },
   },
 });
