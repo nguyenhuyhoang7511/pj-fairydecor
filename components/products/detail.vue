@@ -500,7 +500,7 @@ onMounted(() => {
 
 .detail-product {
   .description {
-    font-size: 12px;
+    font-size: 14px;
     p {
       font-size: 12px;
     }

@@ -1,8 +1,10 @@
 <template>
-    <Toast />
+    <Toast position="bottom-left"  />
+
 </template>
   
 <script setup lang="ts">
+
 </script>
   
 <style lang="scss">

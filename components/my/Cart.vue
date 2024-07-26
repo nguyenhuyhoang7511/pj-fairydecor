@@ -13,14 +13,14 @@
         ref="dt"
         :value="productsInsideCart"
         v-model:selection="selectedProducts"
-        dataKey="image"
+        dataKey="code"
       >
         <template #header>
           <div class="flex-container">
             <Button
               class="download-svg"
               label="Tải về"
-              icon="pi pi-upload"
+              icon="pi pi-download"
               severity="help"
               @click="exportCSV($event)"
             />
@@ -34,7 +34,7 @@
         </template>
 
         <Column selectionMode="multiple" style="width: 3rem" :exportable="false"></Column>
-        <Column field="id" header="Thứ tự" sortable style="min-width: 8rem">
+        <Column field="id" header="STT"  style="min-width: 8rem">
           <template #body="{ index }">{{ index + 1 }}</template>
         </Column>
         <Column header="Ảnh" style="min-width: 10rem">
@@ -67,7 +67,7 @@
           style="min-width: 8rem; text-align: center"
         >
           <template #body="slotProps">
-            <Chip :label="slotProps.data.total" />
+            <Chip :label="slotProps.data.total.toString()" />
           </template>
         </Column>
         <Column field="size" header="Kích thước" style="min-width: 12rem">

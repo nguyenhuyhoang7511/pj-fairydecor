@@ -26,7 +26,7 @@ const handleGetProductsForCard = () => {
 };
 const handleViewAll = () => {
   router.push("/my-shopping-cart");
-  menu.value.close()
+  menu.value.toggle();
 };
 </script>
 
@@ -37,7 +37,7 @@ const handleViewAll = () => {
         <div class="nav-brand">
           <div class="container-logo" @click="router.push('/')">
             <div class="logo-style">
-            <i class="pi pi-star-fill"></i>
+              <i class="pi pi-star-fill"></i>
             </div>
             <div class="tablet-none company-name">
               <p>Bán tranh treo tường</p>
@@ -66,22 +66,27 @@ const handleViewAll = () => {
               <template #start>
                 <div class="container-cart-inside">
                   <p class="title-header">Danh sách sản phẩm</p>
-                  <div class="container-item" v-for="product in productsInsideCart">
-                    <div class="left">
-                      <img class="image" :src="product.image" alt="" />
-                    </div>
-                    <div class="right">
-                      <p class="name two-lines-ellipsis">{{ product.title }}</p>
-                      <p class="price">
-                        {{ formatPrice(product.price) }} ({{ product.total }} sản phẩm) |
-                        {{ product.category }}
-                      </p>
+                  <div v-if="productsInsideCart.length > 0">
+                    <div class="container-item" v-for="product in productsInsideCart">
+                      <div class="left">
+                        <img class="image" :src="product.image" alt="" />
+                      </div>
+                      <div class="right">
+                        <p class="name two-lines-ellipsis">{{ product.title }}</p>
+                        <p class="price">
+                          {{ formatPrice(product.price) }} ({{ product.total }} sản phẩm)
+                          |
+                          {{ product.category }}
+                        </p>
+                      </div>
                     </div>
                   </div>
+                  <img class="image-empty" v-else src="https://bizweb.dktcdn.net/100/360/810/themes/732049/assets/empty-cart.png?1669015697083" alt="">
                   <div
                     class="view-all"
                     style="text-align: center; font-size: 0.8rem; cursor: pointer"
                     @click="handleViewAll"
+                    v-if="productsInsideCart.length > 0"
                   >
                     Xem tất cả
                   </div>
@@ -96,7 +101,10 @@ const handleViewAll = () => {
 </template>
 
 <style scoped lang="scss">
-.logo-style{
+.image-empty{
+  padding: 2rem
+}
+.logo-style {
   width: 66px;
   height: 46px;
   background-color: brown;
@@ -104,9 +112,9 @@ const handleViewAll = () => {
   justify-content: center;
   align-items: center;
   color: yellow;
-  margin-right: .7rem;
+  margin-right: 0.7rem;
   border-radius: 4px;
-  i{
+  i {
     font-size: 1.5rem;
   }
 }
@@ -121,7 +129,7 @@ const handleViewAll = () => {
 }
 .container-cart-inside {
   max-height: 35rem;
-  overflow: scroll;
+  overflow: auto;
   padding: 0.5rem 1rem;
   width: 25rem;
   p {
