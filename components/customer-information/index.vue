@@ -129,7 +129,7 @@ import { useForm } from "vee-validate";
 import * as yup from "yup";
 
 // VALIDATE
-const { errors, handleSubmit, defineField,setFieldValue } = useForm({
+const { errors, handleSubmit, defineField, setFieldValue } = useForm({
   validationSchema: yup.object({
     fullName: yup.string().required("Họ và tên không được để trống"),
     phoneNumber: yup
@@ -162,23 +162,38 @@ const [ward, wardAttrs] = defineField("ward");
 const [specificAddress, specificAddressAttrs] = defineField("specificAddress");
 
 const router = useRouter();
-const note = ref('')
+const toast = useToast();
+const note = ref("");
 
 const getCustomerInfo = () => {
-  // const cartString = localStorage.getItem("cart");
-  // let response = cartString ? JSON.parse(cartString) : [];
-  // productsInsideCart.value = response;
-  // console.log(productsInsideCart.value);
-  // setFieldValue("fullName", 'test123');
-
+  const cartString = localStorage.getItem("customer");
+  let response = cartString ? JSON.parse(cartString) : [];
+  setFieldValue("fullName", response.fullName);
+  setFieldValue("phoneNumber", response.phoneNumber);
+  setFieldValue("email", response.email);
+  setFieldValue("deliveryDate", response.deliveryDate);
+  setFieldValue("province", response.province);
+  setFieldValue("district", response.district);
+  setFieldValue("ward", response.ward);
+  setFieldValue("specificAddress", response.specificAddress);
+  note.value = response.note;
 };
 
 const handleConfirm = handleSubmit(async (values) => {
-  const customerInfo = {...values,...note.value}
-  console.log(customerInfo);
+  const customerInfo = {
+    fullName: values.fullName,
+    phoneNumber: values.phoneNumber,
+    email: values.email,
+    deliveryDate: formatDate(values.deliveryDate),
+    province: values.province,
+    district: values.district,
+    ward: values.ward,
+    specificAddress: values.specificAddress,
+    note: note.value,
+  };
   try {
-    localStorage.setItem("customer", JSON.stringify(customerInformation));
-    // router.push("/payment");
+    localStorage.setItem("customer", JSON.stringify(customerInfo));
+    router.push("/payment");
   } catch (error) {
     toast.add({
       severity: "error",
@@ -189,9 +204,21 @@ const handleConfirm = handleSubmit(async (values) => {
   }
 });
 
+// Format date
+const formatDate = (date) => {
+  console.log(typeof date);
+  if (typeof date == "string") {
+    return date;
+  } else {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+};
 onMounted(() => {
-  getCustomerInfo()
-})
+  getCustomerInfo();
+});
 </script>
 
 <style lang="scss" scoped>
