@@ -223,6 +223,7 @@ const handleConfirmPayment = () => {
   confirmPaymentDialog.value = false;
   try {
     localStorage.setItem("productPayment", JSON.stringify(selectedProducts.value));
+    router.push('/customer-information')
   } catch (error) {
     toast.add({
       severity: "error",
