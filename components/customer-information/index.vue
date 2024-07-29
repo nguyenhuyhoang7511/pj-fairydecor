@@ -5,7 +5,7 @@
       <div class="c-form-custom">
         <div class="form-custom">
           <div class="split-layout height-field">
-            <div class="flex-auto width-50">
+            <div class="flex-auto width-50 field-sp">
               <label class="label">Họ và tên </label>
               <InputText
                 v-model="fullName"
@@ -15,7 +15,7 @@
               <div class="message-error">{{ errors.fullName }}</div>
             </div>
 
-            <div class="flex-auto width-50">
+            <div class="flex-auto width-50 field-sp">
               <label class="label">Số điện thoại </label>
               <InputText
                 v-model="phoneNumber"
@@ -26,7 +26,7 @@
             </div>
           </div>
           <div class="split-layout height-field">
-            <div class="flex-auto width-50">
+            <div class="flex-auto width-50 field-sp">
               <label class="label">Email liên hệ </label>
               <InputText
                 v-model="email"
@@ -36,7 +36,7 @@
               <div class="message-error">{{ errors.email }}</div>
             </div>
 
-            <div class="flex-auto width-50">
+            <div class="flex-auto width-50 field-sp">
               <label class="label">Ngày nhận hàng </label>
               <Calendar
                 v-model="deliveryDate"
@@ -51,7 +51,7 @@
           </div>
 
           <div class="split-layout height-field">
-            <div class="flex-auto width-50">
+            <div class="flex-auto width-50 field-sp">
               <label class="label">Tỉnh | Thành phố </label>
               <InputText
                 v-model="province"
@@ -61,7 +61,7 @@
               <div class="message-error">{{ errors.province }}</div>
             </div>
 
-            <div class="flex-auto width-50">
+            <div class="flex-auto width-50 field-sp">
               <label class="label">Quận | Huyện </label>
               <InputText
                 v-model="district"
@@ -72,7 +72,7 @@
             </div>
           </div>
 
-          <div class="height-field">
+          <div class="height-field field-sp">
             <div class="flex-auto">
               <label class="label">Phường | Xã </label>
               <InputText
@@ -84,7 +84,7 @@
             </div>
           </div>
 
-          <div class="height-field">
+          <div class="height-field field-sp">
             <div class="flex-auto">
               <label class="label">Địa chỉ cụ thể (số nhà-ngõ-ngách) </label>
               <InputText
@@ -96,7 +96,7 @@
             </div>
           </div>
 
-          <div class="height-field">
+          <div class="height-field field-sp-note">
             <div class="flex-auto">
               <label class="label">Ghi chú (nếu có)</label>
               <Textarea
@@ -279,5 +279,49 @@ onMounted(() => {
 }
 :deep(.p-inputtext) {
   font-size: 0.8rem;
+}
+
+@media screen and (max-width: 575px) {
+  .container-form {
+    .title-header {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-top: 0;
+      text-align: center;
+    }
+    .c-form-custom {
+      display: flex;
+      justify-content: center;
+      .form-custom {
+        width: 90%;
+        border: 1px solid #ccc;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        .split-layout {
+          display: flex;
+          flex-direction: column;
+          gap: 0rem;
+          justify-content: space-between;
+          .width-50 {
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+  .field-sp {
+    height: 5.5rem;
+  }
+  .field-sp-note{
+    height: 6.5rem;
+  }
+  .height-field {
+    min-height: unset;
+  }
+  .container-btn-action {
+    button {
+      width: 100%;
+    }
+  }
 }
 </style>

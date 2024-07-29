@@ -45,8 +45,10 @@
     padding: 0;
     margin-top: 0.5rem;
     margin-bottom: 2rem;
+    overflow: auto;
     .p-menuitem {
       font-size: 0.8rem;
+      text-wrap: nowrap;
     }
   }
   </style>

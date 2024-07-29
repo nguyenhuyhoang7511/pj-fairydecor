@@ -43,9 +43,11 @@ const items = ref([
 :deep(.p-breadcrumb) {
   padding: 0;
   margin-top: 0.5rem;
+  overflow: auto;
   margin-bottom: 2rem;
   .p-menuitem {
     font-size: 0.8rem;
+    text-wrap: nowrap
   }
 }
 </style>

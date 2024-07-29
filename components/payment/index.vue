@@ -18,14 +18,14 @@
         </div>
         <div class="order-infomation">
           <h4>Thông tin đơn hàng:</h4>
-          <DataTable :value="productPayment">
+          <DataTable :value="productPayment" class="producst-payment-pc">
             <Column field="title" header="Tên"></Column>
-            <Column header="Image">
+            <Column header="Ảnh">
               <template #body="slotProps">
                 <Image
                   :src="slotProps.data.image"
                   alt="Image"
-                  width="64px"
+                  width="164px"
                   preview
                   :alt="slotProps.data.image"
                 />
@@ -38,16 +38,8 @@
                 >
               </template>
             </Column>
-            <Column
-              field="category"
-              header="Phân loại"
-              style="min-width: 10rem; text-align: center"
-            ></Column>
-            <Column
-              field="total"
-              header="Số lượng"
-              style="min-width: 8rem; text-align: center"
-            >
+            <Column field="category" header="Phân loại" style="min-width: 10rem"></Column>
+            <Column field="total" header="Số lượng" style="min-width: 8rem">
               <template #body="slotProps">
                 <Chip :label="slotProps.data.total.toString()" />
               </template>
@@ -57,7 +49,11 @@
                 <Tag severity="info" :value="slotProps.data.size"></Tag>
               </template>
             </Column>
-            <Column field="total_price" header="Thành tiền" style="min-width: 8rem">
+            <Column
+              field="total_price"
+              header="Thành tiền"
+              style="min-width: 8rem; text-align: center"
+            >
               <template #body="slotProps">
                 <span class="product-price">
                   {{ formatPrice(slotProps.data.total_price) }}</span
@@ -65,6 +61,23 @@
               </template>
             </Column>
           </DataTable>
+
+          <div class="producst-payment-sp">
+            <div class="product-item" v-for="product in productPayment">
+              <div class="left">
+                <img :src="product.image" :alt="product.image" />
+              </div>
+              <div class="right">
+                <p class="limit-line">
+                  {{ product.title }}
+                </p>
+                <p>Giá: {{ formatPrice(product.price) }}</p>
+                <p>Loại: {{ product.category }}</p>
+                <p>Số lượng: {{ product.total }}</p>
+                <p>Kích thước: {{ product.size }}</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="order-infomation">
@@ -168,9 +181,9 @@ const totalPrice = computed(() => {
   }
   return productPayment.value.reduce((acc, product) => acc + product.total_price, 0);
 });
+
 onMounted(() => {
   getDataPayment();
-  
 });
 </script>
 
@@ -180,5 +193,53 @@ onMounted(() => {
   background-color: #f0f0f0;
   border: 1px solid #ccc;
   text-align: start;
+  p {
+    font-size: 0.9rem;
+  }
+}
+:deep(.p-datatable .p-datatable-tbody > tr > td) {
+  font-size: 0.8rem;
+}
+.producst-payment-sp {
+  display: none;
+}
+
+.limit-line {
+  font-size: 1rem !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: bold;
+  font-family: emoji;
+}
+@media screen and (max-width: 575px) {
+  .producst-payment-pc {
+    display: none;
+  }
+  .producst-payment-sp {
+    display: block;
+    .product-item {
+      display: flex;
+      border-bottom: 1px solid #ccc;
+      padding: 1rem 0;
+      gap: 1rem;
+      p {
+        margin: 0;
+        margin-bottom: 0.5rem;
+      }
+      .left {
+        img {
+          width: 9rem;
+          height: 9rem;
+        }
+        width: 100%;
+      }
+      .right{
+        width: 32rem;
+      }
+    }
+  }
 }
 </style>

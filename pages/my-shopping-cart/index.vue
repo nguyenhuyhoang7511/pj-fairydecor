@@ -20,7 +20,7 @@
         </template>
       </Breadcrumb>
     </div>
-    <MyCart/>    
+    <MyCart />
   </div>
 </template>
 
@@ -29,23 +29,21 @@ import { ref } from "vue";
 
 const home = ref({
   icon: "pi pi-home",
-  label: 'Trang chủ',
+  label: "Trang chủ",
   route: "/",
 });
-const items = ref([
-  { label: "Giỏ hàng" },
-  { label: "Danh sách giỏ hàng" },
-]);
+const items = ref([{ label: "Giỏ hàng" }, { label: "Danh sách giỏ hàng" }]);
 </script>
 
 <style scoped lang="scss">
-:deep(.p-breadcrumb)
-{
-    padding: 0;
-    margin-top: .5rem;
-    margin-bottom: 2rem;
-    .p-menuitem{
-        font-size: .8rem;
-    }
+:deep(.p-breadcrumb) {
+  padding: 0;
+  margin-top: 0.5rem;
+  margin-bottom: 2rem;
+  overflow: auto;
+  .p-menuitem {
+    font-size: 0.8rem;
+    text-wrap: nowrap;
+  }
 }
 </style>
