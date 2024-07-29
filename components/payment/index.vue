@@ -38,10 +38,20 @@
                 >
               </template>
             </Column>
-            <Column field="category" header="Phân loại" style="min-width: 10rem"></Column>
+            <Column field="category" header="Phân loại" style="min-width: 10rem">
+              <template #body="slotProps">
+                <Chip
+                  style="margin-left: 0.5rem; border-radius: 0; font-size: 0.8rem"
+                  :label="slotProps.data.category"
+                />
+              </template>
+            </Column>
             <Column field="total" header="Số lượng" style="min-width: 8rem">
               <template #body="slotProps">
-                <Chip :label="slotProps.data.total.toString()" />
+                <Chip
+                  style="margin-left: 1rem; font-size: 0.8rem"
+                  :label="slotProps.data.total.toString()"
+                />
               </template>
             </Column>
             <Column field="size" header="Kích thước" style="min-width: 12rem">
@@ -122,6 +132,7 @@ const productPayment = ref("");
 const customerPayment = ref("");
 const loading = ref(false);
 const toast = useToast();
+const route = useRoute();
 
 function formatPrice(value) {
   if (!value) {
@@ -165,9 +176,12 @@ const handleRedirect = () => {
 
 const getDataPayment = () => {
   const storedProductPayment = localStorage.getItem("productPayment");
+  const ProductPurchasedNow = localStorage.getItem("ProductPurchasedNow");
   const storedCustomerPayment = localStorage.getItem("customer");
 
-  if (storedProductPayment) {
+  if (route.query.now) {
+    productPayment.value = [JSON.parse(ProductPurchasedNow)];
+  } else {
     productPayment.value = JSON.parse(storedProductPayment);
   }
   if (storedCustomerPayment) {
@@ -236,7 +250,7 @@ onMounted(() => {
         }
         width: 100%;
       }
-      .right{
+      .right {
         width: 32rem;
       }
     }

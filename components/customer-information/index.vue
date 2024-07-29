@@ -164,6 +164,7 @@ const [specificAddress, specificAddressAttrs] = defineField("specificAddress");
 const router = useRouter();
 const toast = useToast();
 const note = ref("");
+const route = useRoute();
 
 const getCustomerInfo = () => {
   const cartString = localStorage.getItem("customer");
@@ -193,7 +194,11 @@ const handleConfirm = handleSubmit(async (values) => {
   };
   try {
     localStorage.setItem("customer", JSON.stringify(customerInfo));
-    router.push("/payment");
+    if (route.query.now) {
+      router.push({ path: "/payment", query: { now: "true" } });
+    } else {
+      router.push("/payment");
+    }
   } catch (error) {
     toast.add({
       severity: "error",
@@ -312,7 +317,7 @@ onMounted(() => {
   .field-sp {
     height: 5.5rem;
   }
-  .field-sp-note{
+  .field-sp-note {
     height: 6.5rem;
   }
   .height-field {

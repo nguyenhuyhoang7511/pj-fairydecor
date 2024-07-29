@@ -21,7 +21,11 @@
               <InputIcon>
                 <i class="pi pi-search" />
               </InputIcon>
-              <InputText v-model="filters['global'].value" placeholder="Tìm kiếm..." />
+              <InputText
+                v-model="keyWord"
+                placeholder="Tìm kiếm..."
+                @input="handleSearch"
+              />
             </IconField>
             <Button
               class="download-svg"
@@ -67,10 +71,22 @@
           style="min-width: 8rem; text-align: center"
         >
           <template #body="slotProps">
-            <Chip :label="slotProps.data.total.toString()" />
+            <InputNumber
+              inputId="horizontal-buttons"
+              :value="slotProps.data.total"
+              :modelValue="slotProps.data.total"
+              showButtons
+              buttonLayout="horizontal"
+              :step="1"
+              :min="1"
+              @input="(e) => updateProductByCode(slotProps.data.code, e)"
+            >
+              <template #incrementbuttonicon> + </template>
+              <template #decrementbuttonicon> - </template>
+            </InputNumber>
           </template>
         </Column>
-        <Column field="size" header="Kích thước" style="min-width: 12rem">
+        <Column field="size" header="Kích thước" style="min-width: 12rem;">
           <template #body="slotProps">
             <Tag severity="info" :value="slotProps.data.size"></Tag>
           </template>
@@ -152,7 +168,7 @@ import { useCartStore } from "~/store/cartStore";
 // VARIABLE
 const toast = useToast();
 const cartStore = useCartStore();
-const router = useRouter()
+const router = useRouter();
 const dt = ref();
 const productsInsideCart = ref();
 const confirmPaymentDialog = ref(false);
@@ -160,6 +176,7 @@ const productForDelete = ref();
 const confirmDeleteProductDialog = ref(false);
 const product = ref({});
 const selectedProducts = ref();
+const keyWord = ref();
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
@@ -223,7 +240,7 @@ const handleConfirmPayment = () => {
   confirmPaymentDialog.value = false;
   try {
     localStorage.setItem("productPayment", JSON.stringify(selectedProducts.value));
-    router.push('/customer-information')
+    router.push("/customer-information");
   } catch (error) {
     toast.add({
       severity: "error",
@@ -234,12 +251,77 @@ const handleConfirmPayment = () => {
   }
 };
 
+// UPDATE QUANTITY PRODUCT
+const updateProductByCode = (productCode, e) => {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let productIndex = cart.findIndex((product) => product.code === productCode);
+
+  if (productIndex !== -1) {
+    let product = cart[productIndex];
+    product.total = e.value;
+    cart[productIndex] = product;
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    const updatedProducts = productsInsideCart.value.map((product) => {
+      if (product.code === productCode) {
+        return {
+          ...product,
+          total: e.value,
+        };
+      }
+      return product;
+    });
+
+    productsInsideCart.value = updatedProducts;
+
+    toast.add({
+      severity: "success",
+      detail: "Cập nhật sản phẩm thành công",
+      summary: "Thông báo",
+      life: 3000,
+    });
+  } else {
+    toast.add({
+      severity: "error",
+      detail: "Cập nhật sản phẩm không thành công",
+      summary: "Thông báo",
+      life: 3000,
+    });
+  }
+};
+
+// HANDLE SEARCH PRODUCT
+const handleSearch = () => {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  const keywordLower = keyWord.value.toLowerCase();
+  const filteredProducts = cart.filter((product) => {
+    return (
+      product.title.toLowerCase().includes(keywordLower) ||
+      product.category.toLowerCase().includes(keywordLower) ||
+      product.size.toLowerCase().includes(keywordLower) ||
+      product.price == keywordLower
+    );
+  });
+
+  if (filteredProducts.length > 0) {
+    productsInsideCart.value = filteredProducts;
+  }
+};
+
 onMounted(() => {
   handleGetProductsForCard();
 });
 </script>
 
 <style lang="scss" scoped>
+:deep(.p-inputnumber-button) {
+  height: 2.2rem;
+}
+:deep(.p-inputnumber-input) {
+  width: 3rem !important;
+  height: 2.2rem;
+}
 .show-cart-empty {
   display: flex;
   justify-content: center;

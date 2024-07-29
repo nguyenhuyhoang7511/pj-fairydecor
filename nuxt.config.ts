@@ -18,7 +18,7 @@ const config: NuxtConfig = {
   },
   devServer: {
       host: '0.0.0.0',
-      port: 3000, 
+      port: 3002, 
   },
   css: [
     'primevue/resources/themes/aura-light-green/theme.css',

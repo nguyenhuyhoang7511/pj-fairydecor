@@ -104,7 +104,12 @@
           icon="pi pi-shopping-cart"
           @click="handleAddToCart"
         />
-        <Button class="btn" label="Mua ngay" icon="pi pi-money-bill" />
+        <Button
+          class="btn"
+          label="Mua ngay"
+          icon="pi pi-money-bill"
+          @click="handleBuyNow"
+        />
       </div>
     </div>
   </div>
@@ -183,6 +188,7 @@ const selectedSize = ref<Option>({
 });
 const toast = useToast();
 const cartStore = useCartStore();
+const router = useRouter()
 
 const updateQuantity = (e: any) => {
   const priceCurrent = Number(priceProduct.value) / e.value;
@@ -206,16 +212,18 @@ const handleSelectedCategory = (item: ProductType) => {
 const handleAddToCart = () => {
   const initProduct = {
     id: product.value?.id,
-    code : generateProductCode(),
+    code: generateProductCode(),
     title: product.value?.title,
     image: selectedCategory.value.image,
     category: selectedCategory.value.name,
     price: priceProduct.value,
     total: quantity.value,
     total_price: priceProduct.value && priceProduct.value * quantity.value,
-    size: selectedSize.value.value ? selectedSize.value.value : product.value?.option[0].value,
+    size: selectedSize.value.value
+      ? selectedSize.value.value
+      : product.value?.option[0].value,
   };
-  const validate = initProduct.category ;
+  const validate = initProduct.category;
 
   if (validate) {
     const cartString = localStorage.getItem("cart");
@@ -223,7 +231,9 @@ const handleAddToCart = () => {
 
     const productExists = cart.some((item: any) => {
       return (
-        item.id === initProduct.id && item.category === initProduct.category &&  item.size === initProduct.size 
+        item.id === initProduct.id &&
+        item.category === initProduct.category &&
+        item.size === initProduct.size
       );
     });
 
@@ -246,6 +256,38 @@ const handleAddToCart = () => {
         life: 3000,
       });
     }
+  } else {
+    toast.add({
+      severity: "warn",
+      detail: "Bạn cần phải lựa chọn mẫu sản phẩm",
+      summary: "Cảnh báo",
+      life: 3000,
+    });
+  }
+};
+
+// buy now
+const handleBuyNow = () => {
+  const initProduct = {
+    id: product.value?.id,
+    code: generateProductCode(),
+    title: product.value?.title,
+    image: selectedCategory.value.image,
+    category: selectedCategory.value.name,
+    price: priceProduct.value,
+    total: quantity.value,
+    total_price: priceProduct.value && priceProduct.value * quantity.value,
+    size: selectedSize.value.value
+      ? selectedSize.value.value
+      : product.value?.option[0].value,
+  };
+
+  const validate = initProduct.category;
+
+  if (validate) {
+    console.log(initProduct);
+    localStorage.setItem("ProductPurchasedNow", JSON.stringify(initProduct));
+    router.push({ path: '/customer-information', query: { now : 'true' } });
   } else {
     toast.add({
       severity: "warn",
@@ -289,11 +331,10 @@ function formatCurrencyVND(amount: any) {
   }
 }
 
-
 const generateProductCode = () => {
-  const timestamp = Date.now().toString(); 
-  const randomSuffix = Math.random().toString(36).substring(2, 8); 
-  const newCode = timestamp.slice(-4) + randomSuffix; 
+  const timestamp = Date.now().toString();
+  const randomSuffix = Math.random().toString(36).substring(2, 8);
+  const newCode = timestamp.slice(-4) + randomSuffix;
 
   console.log(newCode);
   return newCode;
@@ -323,7 +364,7 @@ onMounted(() => {
   }
   .description {
     font-size: 0.9rem;
-    p{
+    p {
       font-size: 0.5rem;
     }
   }
@@ -568,14 +609,14 @@ onMounted(() => {
     }
 
     .quantity {
-      .number-quantity-sp{
+      .number-quantity-sp {
         margin-left: 0 !important;
       }
     }
-    .list-size ,.item-size{
-          width: 100% !important;
+    .list-size,
+    .item-size {
+      width: 100% !important;
     }
-
   }
 }
 </style>
